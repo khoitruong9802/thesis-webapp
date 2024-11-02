@@ -1,0 +1,4 @@
+node_modules
+testAPI
+.env
+uploads
