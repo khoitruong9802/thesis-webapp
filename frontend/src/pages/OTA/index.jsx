@@ -1,17 +1,20 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import "./OTA.css"; // Import file CSS
 import OTAVersion from "./OTAVersion";
+import { getVersion, uploadFile } from "../../services/OTAService";
 
 function FileUpload() {
   const [selectedFile, setSelectedFile] = useState(null);
   const [updates, setUpdates] = useState([]);
 
-  const fetchVersion = () => {
+  const fetchVersion = async () => {
     // Fetch the JSON data from the backend
-    fetch("http://localhost:3001/api/v1/OTA/upload")
-      .then((response) => response.json())
-      .then((data) => setUpdates(data))
-      .catch((error) => console.error("Error fetching updates:", error));
+    try {
+      const res = await getVersion();
+      setUpdates(res.data);
+    } catch (error) {
+      console.error("Error fetching updates:", error);
+    }
   };
 
   useEffect(() => {
@@ -33,19 +36,11 @@ function FileUpload() {
 
     // Gửi request với file lên server
     try {
-      const response = await fetch("http://localhost:3001/upload", {
-        method: "POST",
-        body: formData,
-      });
-      if (response.ok) {
-        alert("File uploaded successfully!");
-        fetchVersion();
-      } else {
-        alert("File upload failed!");
-      }
+      const res = await uploadFile(formData);
+      alert("File uploaded successfully!");
+      console.log(res);
     } catch (error) {
-      console.error("Error uploading file:", error);
-      alert("Error uploading file");
+      alert("File upload failed!");
     }
   };
 
@@ -66,7 +61,3 @@ function FileUpload() {
 }
 
 export default FileUpload;
-
-// 192.168.1.248: LA
-// 192.168.0.195: KAICoffe
-// 192.168.0.252
