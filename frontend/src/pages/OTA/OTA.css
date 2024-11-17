@@ -10,9 +10,9 @@
   background-color: #f0f4f8;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease;
-  margin-right: 400px;
+  /* margin-right: 400px;
   margin-top: 100px;
-  margin-bottom: 570px;
+  margin-bottom: 570px; */
 }
 
 .upload-container:hover {
@@ -63,7 +63,7 @@ th {
   text-align: center;
   position: sticky;
   z-index: 1;
-  top: 0;
+  top: -20px;
 }
 
 /* Style cho các hàng */
@@ -105,15 +105,15 @@ td {
 /* Đặt kích thước cho từng phần */
 .table-container {
   width: 45%;
-  height: 400px;
+  height: 90vh;
   overflow-y: auto; /* Cho phép cuộn dọc */
   border: 1px dashed blue;
   padding: 20px;
   border-radius: 12px;
-  margin: 20px 0;
+  /* margin: 20px 0; */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  margin-left: 50px;
-  margin-bottom: 300px;
+  /* margin-right: 50px; */
+  /* margin-bottom: 300px; */
 }
 
 .table-container h1 {

@@ -12,6 +12,7 @@ function FileUpload() {
     try {
       const res = await getVersion();
       setUpdates(res.data);
+      console.log(res.data);
     } catch (error) {
       console.error("Error fetching updates:", error);
     }
@@ -38,6 +39,7 @@ function FileUpload() {
     try {
       const res = await uploadFile(formData);
       alert("File uploaded successfully!");
+      fetchVersion();
       console.log(res);
     } catch (error) {
       alert("File upload failed!");
@@ -45,7 +47,7 @@ function FileUpload() {
   };
 
   return (
-    <div className="flex items-center justify-between h-screen gap-y-8">
+    <div className="flex items-center justify-center gap-x-32 h-screen w-full">
       <div className="table-container">
         <OTAVersion updates={updates} />
       </div>
