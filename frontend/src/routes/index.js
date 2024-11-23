@@ -56,5 +56,6 @@ export const privateRoutes = [
   {
     path: "/dashboard",
     component: Dashboard,
+    layout: null,
   },
 ];
