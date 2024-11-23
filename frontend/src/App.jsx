@@ -21,68 +21,68 @@ function App() {
   const isAuth = useSelector((state) => state.auth.isAuth);
 
   return (
-      <div className="flex flex-col h-screen w-full">
-        {/* <div className="flex flex-col w-full"> */}
-        <BrowserRouter>
-          <Routes>
-            {publicRoutes.map((item) => {
-              const Page = item.component;
+    <div className="flex flex-col h-screen w-full">
+      {/* <div className="flex flex-col w-full"> */}
+      <BrowserRouter>
+        <Routes>
+          {publicRoutes.map((item) => {
+            const Page = item.component;
 
-              let Layout = DefaultLayout;
-              if (item.layout) {
-                Layout = item.layout;
-              } else if (item.layout === null) {
-                Layout = Fragment;
-              }
+            let Layout = DefaultLayout;
+            if (item.layout) {
+              Layout = item.layout;
+            } else if (item.layout === null) {
+              Layout = Fragment;
+            }
 
+            return (
+              <Route
+                key={item.path}
+                path={item.path}
+                element={
+                  <Layout>
+                    <Page />
+                  </Layout>
+                }
+              />
+            );
+          })}
+
+          {privateRoutes.map((item) => {
+            if (!isAuth) {
               return (
                 <Route
                   key={item.path}
                   path={item.path}
-                  element={
-                    <Layout>
-                      <Page />
-                    </Layout>
-                  }
+                  element={<Navigate key={item.path} to="/" />}
                 />
               );
-            })}
+            }
 
-            {privateRoutes.map((item) => {
-              if (!isAuth) {
-                return (
-                  <Route
-                    key={item.path}
-                    path={item.path}
-                    element={<Navigate key={item.path} to="/" />}
-                  />
-                );
-              }
+            const Page = item.component;
 
-              const Page = item.component;
+            let Layout = DefaultLayout;
+            if (item.layout) {
+              Layout = item.layout;
+            } else if (item.layout === null) {
+              Layout = Fragment;
+            }
 
-              let Layout = DefaultLayout;
-              if (item.layout) {
-                Layout = item.layout;
-              } else if (item.layout === null) {
-                Layout = Fragment;
-              }
-
-              return (
-                <Route
-                  key={item.path}
-                  path={item.path}
-                  element={
-                    <Layout>
-                      <Page />
-                    </Layout>
-                  }
-                />
-              );
-            })}
-          </Routes>
-        </BrowserRouter>
-      </div>
+            return (
+              <Route
+                key={item.path}
+                path={item.path}
+                element={
+                  <Layout>
+                    <Page />
+                  </Layout>
+                }
+              />
+            );
+          })}
+        </Routes>
+      </BrowserRouter>
+    </div>
   );
 }
 

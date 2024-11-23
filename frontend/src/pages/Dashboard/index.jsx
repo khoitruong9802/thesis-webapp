@@ -1,99 +1,102 @@
 // Import necessary libraries and CSS
-import React from "react";
-import "./Dashboard.css";
-import { Chart } from "react-chartjs-2";
+import SensorCard from "../../components/SensorCard";
+import Schedule from "../../components/Schedule";
+
+const sensor = [
+  {
+    value: 28.5,
+    unit: "°C",
+    label: "Soil temperature",
+    color: "text-red-600",
+  },
+  {
+    value: 65.2,
+    unit: "%",
+    label: "Soil humidity",
+    color: "text-blue-600",
+  },
+  {
+    value: 40.2,
+    unit: "mg/kg",
+    label: "Soil nitrogen",
+    color: "text-indigo-600",
+  },
+  {
+    value: 20.3,
+    unit: "mg/kg",
+    label: "Soil phosphorus",
+    color: "text-indigo-600",
+  },
+  {
+    value: 15.5,
+    unit: "mg/kg",
+    label: "Soil potassium",
+    color: "text-indigo-600",
+  },
+];
+
+const schedules = [
+  {
+    scheduleName: "Lịch tưới cam",
+    startTime: "12:00",
+    stopTime: "13:00",
+    flow1: 12,
+    flow2: 12,
+    flow3: 12,
+  },
+  {
+    scheduleName: "Lịch tưới bưởi",
+    startTime: "13:00",
+    stopTime: "14:00",
+    flow1: 12,
+    flow2: 12,
+    flow3: 12,
+  },
+  {
+    scheduleName: "Lịch tưới mận",
+    startTime: "13:00",
+    stopTime: "14:00",
+    flow1: 12,
+    flow2: 12,
+    flow3: 12,
+  },
+  {
+    scheduleName: "Lịch tưới đào",
+    startTime: "13:00",
+    stopTime: "14:00",
+    flow1: 12,
+    flow2: 12,
+    flow3: 12,
+  },
+];
 
 function Dashboard() {
-  // const data = {
-  //   labels: ["January", "February", "March", "April", "May", "June", "July"],
-  //   datasets: [
-  //     {
-  //       label: "Dataset 1",
-  //       data: [65, 59, 80, 81, 56, 55, 40],
-  //       fill: false,
-  //       backgroundColor: "rgb(75, 192, 192)",
-  //       borderColor: "rgba(75, 192, 192, 0.2)",
-  //     },
-  //   ],
-  // };
-
   return (
-    <div className="dashboard-wrapper">
-      <div className="sidebar">
-        <h2 className="sidebar-title">Menu</h2>
-        <ul className="sidebar-menu">
-          <li className="menu-item">Home</li>
-          <li className="menu-item">Dashboard</li>
-          <li className="menu-item">Settings</li>
-          <li className="menu-item">Profile</li>
-          <li className="menu-item">Logout</li>
-        </ul>
+    <div className="flex gap-8 flex-col h-screen p-4 relative">
+      <div className="bg-white rounded-lg shadow-md p-4 w-full border border-gray-200">
+        <h2 className="text-2xl font-bold mb-4">Sensor value</h2>
+
+        {/* <h1 className="text-3xl font-bold text-gray-800 mb-5">Sensors</h1> */}
+        <div className="flex justify-around items-center flex-wrap gap-4 mb-8">
+          {sensor.map((item, index) => (
+            <SensorCard
+              key={index}
+              value={item.value}
+              unit={item.unit}
+              label={item.label}
+              color={item.color}
+            />
+          ))}
+        </div>
       </div>
 
-      <div className="dashboard-container">
-        <h1 className="header-title">Dashboard</h1>
-
-        <div className="card-container">
-          <div className="card">
-            <div className="value normal">28°C</div>
-            <div className="label">Temperature</div>
-          </div>
-          <div className="card">
-            <div className="value normal">65%</div>
-            <div className="label">Humidity</div>
-          </div>
-          <div className="card">
-            <div className="value normal">40ppm</div>
-            <div className="label">Nito</div>
-          </div>
-          <div className="card">
-            <div className="value hot">20ppm</div>
-            <div className="label">Photpho</div>
-          </div>
-          <div className="card">
-            <div className="value hot">15ppm</div>
-            <div className="label">Kali</div>
-          </div>
-        </div>
-
-        <div className="tab-and-chart">
-          <div className="table-container-das">
-            <h1 className="header-title">Recently Table</h1>
-            <table className="table">
-              <thead>
-                <tr>
-                  <th>Product</th>
-                  <th>Tracking ID</th>
-                  <th>Date</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>Khôi</td>
-                  <td>16112024</td>
-                  <td>16 November 2024</td>
-                  <td className="status-approved">Approved</td>
-                </tr>
-                <tr>
-                  <td>Kiên</td>
-                  <td>17112024</td>
-                  <td>17 November 2024</td>
-                  <td className="status-pending">Pending</td>
-                </tr>
-                <tr>
-                  <td>Sơn</td>
-                  <td>18112024</td>
-                  <td>18 November 2024</td>
-                  <td className="status-approved">Approved</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-          <div className="chart">
-            <h1>Chart</h1>
-            {/* <Chart type="line" data={data} /> */}
+      <div className="flex flex-col md:flex-row justify-between gap-8 border border-gray-200">
+        <div className="bg-white rounded-lg shadow-md p-5 w-full">
+          <h2 className="text-2xl font-bold mb-4">Schedules</h2>
+          <div className="flex flex-col gap-y-2">
+            {schedules.map((item, index) => (
+              <Schedule key={index} {...item} />
+            ))}
           </div>
         </div>
       </div>
