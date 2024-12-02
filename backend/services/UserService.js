@@ -1,178 +1,102 @@
-import { User } from "../models/UserModel.js";
-import bcrypt from "bcrypt";
+import {
+  getUsers as modelGetUsers,
+  createUser as modelCreateUser,
+  updateUser as modelUpdateUser,
+  deleteUser as modelDeleteUser,
+  getUserById as modelGetUserById,
+  checkUserValid as modelCheckUserValid,
+  getUsersCount as modelGetUsersCount,
+  // doesUsernameExist,
+} from "../models/UserModel.js";
 import { generateAccessToken, generateRefreshToken } from "./JwtService.js";
 
-export const createUser = (newUser) => {
-  return new Promise(async (resolve, reject) => {
-    const { full_name, username, password } = newUser;
-    try {
-      const checkusernamelUser = await User.findOne({
-        username: username,
-      });
-      if (checkusernamelUser !== null) {
-        reject({
-          status: "ERR",
-          message: "The username is already used",
-        });
-      }
-      // const hash = bcrypt.hashSync(password, 10);
-      const createdUser = await User.create({
-        full_name,
-        username,
-        password,
-      });
-      if (createdUser) {
-        resolve({
-          status: "OK",
-          message: "SUCCESS",
-          data: createdUser,
-        });
-      }
-    } catch (err) {
-      reject(err);
-    }
-  });
+export const getUsers = async (page = 1, limit = 10) => {
+  try {
+    const result = await modelGetUsers(page, limit);
+    const totalCount = await modelGetUsersCount();
+    const totalPages = Math.ceil(totalCount / limit);
+
+    return {
+      page: parseInt(page, 10),
+      total_pages: totalPages,
+      total_count: totalCount,
+      data: result,
+    };
+  } catch (error) {
+    console.log("Service:", error);
+    throw new Error("Server error");
+  }
 };
 
-export const checkUser = (userLogin) => {
-  return new Promise(async (resolve, reject) => {
+export const getUserById = async (id) => {
+  try {
+    const result = await modelGetUserById(id);
+    return result;
+  } catch (error) {
+    console.log("Service:", error);
+    throw new Error("Server error");
+  }
+};
+
+export const createUser = async (user) => {
+  try {
+    const { username, password, email, full_name } = user;
+    // const usernameExists = await doesUsernameExist(username);
+    // if (usernameExists) {
+    //   throw new Error("Username already exists");
+    // }
+
+    const result = await modelCreateUser(username, password, email, full_name);
+    return result;
+  } catch (error) {
+    console.log("Service:", error);
+    throw new Error(error);
+  }
+};
+
+export const updateUser = async (id, user) => {
+  try {
+    const { username, password, email, full_name } = user;
+    const result = await modelUpdateUser(
+      id,
+      username,
+      password,
+      email,
+      full_name
+    );
+    return result;
+  } catch (error) {
+    console.log("Service:", error);
+    throw new Error("Server error");
+  }
+};
+
+export const deleteUser = async (id) => {
+  try {
+    const result = await modelDeleteUser(id);
+    return result;
+  } catch (error) {
+    console.log("Service:", error);
+    throw new Error("Server error");
+  }
+};
+
+export const checkUserValid = async (userLogin) => {
+  try {
     const { username, password } = userLogin;
-    try {
-      const checkUser = await User.findOne({
-        username: username,
-      });
-      if (checkUser === null) {
-        reject({
-          status: "ERR",
-          message: "The username is not defined",
-        });
-      }
-      const comparePassword = password === checkUser.password;
-      // const comparePassword = bcrypt.compareSync(password, checkUser.password);
-      if (!comparePassword) {
-        reject({
-          status: "ERR",
-          message: "The password is incorrect",
-        });
-      }
-      const access_token = await generateAccessToken({
-        id: checkUser._id.toString(),
-      });
-
-      const refresh_token = await generateRefreshToken({
-        id: checkUser._id.toString(),
-      });
-
-      resolve({
-        status: "OK",
-        message: "SUCCESS",
-        access_token,
-        refresh_token,
-      });
-    } catch (err) {
-      reject(err);
+    const result = await modelCheckUserValid(username, password);
+    if (!result) {
+      throw new Error("Username or password is invalid");
     }
-  });
+    const access_token = generateAccessToken({
+      id: result.id.toString(),
+    });
+    const refresh_token = generateRefreshToken({
+      id: result.id.toString(),
+    });
+    return { access_token, refresh_token };
+  } catch (error) {
+    console.log("Service:", error);
+    throw new Error("Server error");
+  }
 };
-
-export const updateUser = (id, data) => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const checkUser = await User.findOne({
-        _id: id,
-      });
-      if (checkUser === null) {
-        resolve({
-          status: "ERR",
-          message: "The user is not defined",
-        });
-      }
-      const updatedUser = await User.findByIdAndUpdate(id, data, { new: true });
-      resolve({
-        status: "OK",
-        message: "SUCCESS",
-        data: updatedUser,
-      });
-    } catch (e) {
-      reject(e);
-    }
-  });
-};
-
-export const getDetailsUser = (id) => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const user = await User.findOne({
-        _id: id,
-      });
-      if (user === null) {
-        resolve({
-          status: "ERR",
-          message: "The user is not defined",
-        });
-      }
-      resolve({
-        status: "OK",
-        message: "SUCESS",
-        data: user,
-      });
-    } catch (e) {
-      reject(e);
-    }
-  });
-};
-
-//****  admin */
-
-// const deleteUser = (id) => {
-//   return new Promise(async (resolve, reject) => {
-//     try {
-//       const checkUser = await User.findOne({
-//         _id: id,
-//       });
-//       if (checkUser === null) {
-//         resolve({
-//           status: "ERR",
-//           message: "The user is not defined",
-//         });
-//       }
-
-//       await User.findByIdAndDelete(id);
-//       resolve({
-//         status: "OK",
-//         message: "Delete user success",
-//       });
-//     } catch (e) {
-//       reject(e);
-//     }
-//   });
-// };
-
-// const deleteManyUser = (ids) => {
-//   return new Promise(async (resolve, reject) => {
-//     try {
-//       await User.deleteMany({ _id: ids });
-//       resolve({
-//         status: "OK",
-//         message: "Delete user success",
-//       });
-//     } catch (e) {
-//       reject(e);
-//     }
-//   });
-// };
-
-// const getAllUser = () => {
-//   return new Promise(async (resolve, reject) => {
-//     try {
-//       const allUser = await User.find().sort({ createdAt: -1, updatedAt: -1 });
-//       resolve({
-//         status: "OK",
-//         message: "Success",
-//         data: allUser,
-//       });
-//     } catch (e) {
-//       reject(e);
-//     }
-//   });
-// };

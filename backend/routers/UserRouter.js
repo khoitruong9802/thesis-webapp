@@ -8,20 +8,20 @@ import {
   deleteUser,
   refreshToken,
   logoutUser,
-  loginGG,
+  loginGoogle,
 } from "../controllers/UserController.js";
 import { authMiddleware } from "../middlewares/authMiddleware.js";
 
 const router = express.Router();
 
-router.get("/", authMiddleware, getUsers);
-router.get("/:user_id", authMiddleware, getUserById);
+router.get("/", getUsers);
+router.get("/:id", getUserById);
 router.post("/", createUser);
-router.put("/:user_id", authMiddleware, updateUser);
-router.delete("/:user_id", authMiddleware, deleteUser);
+router.put("/:id", updateUser);
+router.delete("/:id", deleteUser);
 router.post("/login", loginUser);
-router.post("/logout", authMiddleware, logoutUser);
+router.post("/google-login", loginGoogle);
+router.post("/logout", logoutUser);
 router.post("/refresh-token", refreshToken);
-router.post("/google-login", loginGG);
 
 export default router;

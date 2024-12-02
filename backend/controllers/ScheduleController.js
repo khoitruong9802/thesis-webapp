@@ -1,62 +1,95 @@
-import { Schedule } from "../models/ScheduleModel.js"
+import {
+  getSchedules as serviceGetSchedules,
+  getScheduleById as serviceGetScheduleById,
+  createSchedule as serviceCreateSchedule,
+  updateSchedule as serviceUpdateSchedule,
+  deleteSchedule as serviceDeleteSchedule,
+} from "../services/ScheduleService.js";
+import { publish } from "../config/mqtt.js";
 
-export const getAllSchedule = async (req, res) => {
+const fertilizerCode = "18faa0dd7a927906cb3e";
+
+export const getSchedules = async (req, res) => {
   try {
-    const schedules = await Schedule.find();
+    const { page, limit } = req.query;
+    const schedules = await serviceGetSchedules(page, limit);
     res.status(200).json(schedules);
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    console.log("Controller:", error);
+    res.status(500).json({ message: "Server error" });
   }
-}
+};
 
 export const getScheduleById = async (req, res) => {
   try {
-    const schedule = await Schedule.findById(req.params.schedule_id);
+    const schedule = await serviceGetScheduleById(req.params.id);
     if (!schedule) {
-      return res.status(400).json({ message: "Schedule not found" });
+      return res.status(500).json({ message: "Schedule not found" });
     }
     res.status(200).json(schedule);
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    console.log("Controller:", error);
+    res.status(500).json({ message: "Server error" });
   }
-}
+};
 
 export const createSchedule = async (req, res) => {
   try {
-    const newSchedule = req.body;
+    const schedule = req.body;
+    const response = await serviceCreateSchedule(schedule);
 
-    const schedule = new Schedule(newSchedule);
-    await schedule.save();
+    publish(
+      `${fertilizerCode}/feeds/schedules`,
+      JSON.stringify({ ...schedule, method: "ADD", id: response.id }),
+      2
+    );
 
-    res.status(200).json(schedule);
+    return res.status(200).json(response);
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    console.log("Controller:", error);
+    return res.status(500).json({ message: "Server error" });
   }
-}
+};
 
 export const updateSchedule = async (req, res) => {
   try {
     const updateSchedule = req.body;
-
-    const schedule = await Schedule.findByIdAndUpdate(req.params.schedule_id, req.body, { new: true, runValidators: true });
+    const id = req.params.id;
+    const schedule = await serviceUpdateSchedule(id, updateSchedule);
     if (!schedule) {
-      return res.status(400).json({ message: "Schedule not found" });
+      return res.status(500).json({ message: "Schedule not found" });
     }
+
+    publish(
+      `${fertilizerCode}/feeds/schedules`,
+      JSON.stringify({ ...schedule, method: "EDIT", id }),
+      2
+    );
 
     res.status(200).json(schedule);
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    console.log("Controller:", error);
+    res.status(500).json({ message: error.message });
   }
-}
+};
 
 export const deleteSchedule = async (req, res) => {
   try {
-    const schedule = await Schedule.findByIdAndDelete(req.params.schedule_id);
+    const id = req.params.id;
+    const schedule = await serviceDeleteSchedule(id);
     if (!schedule) {
-      return res.status(400).json({ message: "Schedule not found" });
+      return res.status(500).json({ message: "Schedule not found" });
     }
+
+    publish(
+      `${fertilizerCode}/feeds/schedules`,
+      JSON.stringify({ method: "DEL", id }),
+      2
+    );
+
     res.status(200).json({ message: "Schedule deleted" });
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    console.log("Controller:", error);
+    res.status(500).json({ message: "Server error" });
   }
-}
+};

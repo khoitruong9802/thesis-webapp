@@ -52,7 +52,7 @@ const DropdownMonitor = [
   {
     id: 3,
     name: "OTA Version",
-    link: "/otaversion",
+    link: "/ota-version",
   },
   {
     id: 3,

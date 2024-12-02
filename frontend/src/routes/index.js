@@ -34,13 +34,9 @@ export const publicRoutes = [
     component: About,
   },
   {
-    path: "/otaversion",
-    component: OTA,
-    layout: null,
-  },
-  {
     path: "*",
     component: NotFound,
+    layout: null,
   },
 ];
 
@@ -56,5 +52,10 @@ export const privateRoutes = [
   {
     path: "/dashboard",
     component: Dashboard,
+  },
+  {
+    path: "/ota-version",
+    component: OTA,
+    layout: null,
   },
 ];

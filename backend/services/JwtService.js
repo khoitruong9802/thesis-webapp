@@ -3,26 +3,18 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-export const generateAccessToken = async (payload) => {
-  const access_token = jwt.sign(
-    {
-      ...payload,
-    },
-    process.env.ACCESS_SECRET_KEY,
-    { expiresIn: "2h" }
-  );
+export const generateAccessToken = (payload) => {
+  const access_token = jwt.sign(payload, process.env.ACCESS_SECRET_KEY, {
+    expiresIn: "2h",
+  });
 
   return access_token;
 };
 
-export const generateRefreshToken = async (payload) => {
-  const refresh_token = jwt.sign(
-    {
-      ...payload,
-    },
-    process.env.REFRESH_SECRET_KEY,
-    { expiresIn: "30d" }
-  );
+export const generateRefreshToken = (payload) => {
+  const refresh_token = jwt.sign(payload, process.env.REFRESH_SECRET_KEY, {
+    expiresIn: "30d",
+  });
 
   return refresh_token;
 };
