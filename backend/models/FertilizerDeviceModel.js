@@ -35,7 +35,11 @@ export const getSchedulesByFertilizerDevice = async (
     end_day: new Date(row.end_day).toLocaleDateString("en-CA"), // Convert to local date (YYYY-MM-DD)
     start_time: row.start_time.substring(0, 5),
     stop_time: row.stop_time.substring(0, 5),
-    days: row.days.replace(/[{}]/g, "").split(",").map(Number), // Convert '{2,3,4}' to [2, 3, 4]
+    days: row.days
+      .replace(/[{}]/g, "")
+      .split(",")
+      .filter((item) => item !== "")
+      .map(Number), // Convert '{2,3,4}' to [2, 3, 4]
   }));
 
   return transformedRows;

@@ -26,7 +26,11 @@ export const getScheduleById = async (id) => {
     end_day: new Date(rows[0].end_day).toLocaleDateString("en-CA"), // Convert to local date (YYYY-MM-DD)
     start_time: rows[0].start_time.substring(0, 5),
     stop_time: rows[0].stop_time.substring(0, 5),
-    days: rows[0].days.replace(/[{}]/g, "").split(",").map(Number), // Convert '{2,3,4}' to [2, 3, 4]
+    days: rows[0].days
+      .replace(/[{}]/g, "")
+      .split(",")
+      .filter((item) => item !== "")
+      .map(Number), // Convert '{2,3,4}' to [2, 3, 4]
   };
 
   return transformedRows;
@@ -46,7 +50,11 @@ export const getSchedules = async (page = 1, limit = 10) => {
     end_day: new Date(row.end_day).toLocaleDateString("en-CA"), // Convert to local date (YYYY-MM-DD)
     start_time: row.start_time.substring(0, 5),
     stop_time: row.stop_time.substring(0, 5),
-    days: row.days.replace(/[{}]/g, "").split(",").map(Number), // Convert '{2,3,4}' to [2, 3, 4]
+    days: row.days
+      .replace(/[{}]/g, "")
+      .split(",")
+      .filter((item) => item !== "")
+      .map(Number), // Convert '{2,3,4}' to [2, 3, 4]
   }));
 
   return transformedRows;
@@ -107,7 +115,11 @@ export const createSchedule = async (
     end_day: new Date(rows[0].end_day).toLocaleDateString("en-CA"), // Convert to local date (YYYY-MM-DD)
     start_time: rows[0].start_time.substring(0, 5),
     stop_time: rows[0].stop_time.substring(0, 5),
-    days: rows[0].days.replace(/[{}]/g, "").split(",").map(Number), // Convert '{2,3,4}' to [2, 3, 4]
+    days: rows[0].days
+      .replace(/[{}]/g, "")
+      .split(",")
+      .filter((item) => item !== "")
+      .map(Number), // Convert '{2,3,4}' to [2, 3, 4]
   };
 
   return transformedRows;
@@ -187,7 +199,7 @@ export const createSchedule = async (
 //     end_day: new Date(rows[0].end_day).toLocaleDateString("en-CA"), // Convert to local date (YYYY-MM-DD)
 //     start_time: rows[0].start_time.substring(0, 5),
 //     stop_time: rows[0].stop_time.substring(0, 5),
-//     days: rows[0].days.replace(/[{}]/g, "").split(",").map(Number), // Convert '{2,3,4}' to [2, 3, 4]
+//     days: rows[0].days.replace(/[{}]/g, "").split(",").filter((item) => item !== "").map(Number) // Convert '{2,3,4}' to [2, 3, 4]
 //   };
 
 //   return transformedRows;
@@ -261,7 +273,11 @@ export const deleteSchedule = async (id) => {
     end_day: new Date(rows[0].end_day).toLocaleDateString("en-CA"), // Convert to local date (YYYY-MM-DD)
     start_time: rows[0].start_time.substring(0, 5),
     stop_time: rows[0].stop_time.substring(0, 5),
-    days: rows[0].days.replace(/[{}]/g, "").split(",").map(Number), // Convert '{2,3,4}' to [2, 3, 4]
+    days: rows[0].days
+      .replace(/[{}]/g, "")
+      .split(",")
+      .filter((item) => item !== "")
+      .map(Number), // Convert '{2,3,4}' to [2, 3, 4]
   };
 
   return transformedRows;
