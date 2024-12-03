@@ -80,45 +80,54 @@ export const createSchedule = async (schedule) => {
   }
 };
 
-export const updateSchedule = async (id, fertilizer_device) => {
+// export const updateSchedule = async (id, schedule) => {
+//   try {
+//     const {
+//       schedule_name,
+//       priority,
+//       area,
+//       description,
+//       flow1,
+//       flow2,
+//       flow3,
+//       cycle,
+//       status,
+//       start_time,
+//       stop_time,
+//       schedule_type,
+//       start_day,
+//       end_day,
+//       days,
+//       fertilizer_device_id,
+//     } = schedule;
+//     const result = await modelUpdateSchedule(
+//       id,
+//       schedule_name,
+//       priority,
+//       area,
+//       description,
+//       flow1,
+//       flow2,
+//       flow3,
+//       cycle,
+//       status,
+//       start_time,
+//       stop_time,
+//       schedule_type,
+//       start_day,
+//       end_day,
+//       days,
+//       fertilizer_device_id
+//     );
+//     return result;
+//   } catch (error) {
+//     console.log("Service:", error);
+//     throw new Error("Server error");
+//   }
+// };
+export const updateSchedule = async (id, schedule) => {
   try {
-    const {
-      schedule_name,
-      priority,
-      area,
-      description,
-      flow1,
-      flow2,
-      flow3,
-      cycle,
-      status,
-      start_time,
-      stop_time,
-      schedule_type,
-      start_day,
-      end_day,
-      days,
-      fertilizer_device_id,
-    } = fertilizer_device;
-    const result = await modelUpdateSchedule(
-      id,
-      schedule_name,
-      priority,
-      area,
-      description,
-      flow1,
-      flow2,
-      flow3,
-      cycle,
-      status,
-      start_time,
-      stop_time,
-      schedule_type,
-      start_day,
-      end_day,
-      days,
-      fertilizer_device_id
-    );
+    const result = await modelUpdateSchedule(id, schedule);
     return result;
   } catch (error) {
     console.log("Service:", error);
