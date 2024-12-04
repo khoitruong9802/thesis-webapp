@@ -1,5 +1,6 @@
 import mqtt from "mqtt";
 import dotenv from "dotenv";
+import { createNotification } from "../services/NotificationService.js";
 
 dotenv.config();
 
@@ -18,6 +19,7 @@ const topics = [
   "relay7",
   "relay8",
   "schedules",
+  "gateway-send",
 ];
 
 let client;
@@ -61,6 +63,19 @@ const startMqttClient = () => {
   // Example: Listen for a specific topic (optional)
   client.on("message", (topic, message) => {
     console.log(`Received message on ${topic}: ${message.toString()}`);
+
+    if (topic === "18faa0dd7a927906cb3e/feeds/gateway-send") {
+      try {
+        createNotification(message.toString());
+        publish(
+          "18faa0dd7a927906cb3e/feeds/notification",
+          message.toString(),
+          1
+        );
+      } catch (error) {
+        console.log("MQTT:", error);
+      }
+    }
   });
 };
 

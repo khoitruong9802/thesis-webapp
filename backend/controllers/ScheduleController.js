@@ -40,7 +40,7 @@ export const createSchedule = async (req, res) => {
 
     publish(
       `${fertilizerCode}/feeds/schedules`,
-      JSON.stringify({ ...schedule, method: "ADD", id: response.id }),
+      JSON.stringify({ ...response, method: "ADD", id: response.id }),
       2
     );
 
