@@ -2,7 +2,7 @@ import pool from "../config/database.js";
 
 export const getScheduleHistorys = async (page = 1, limit = 10) => {
   const offset = (page - 1) * limit;
-  const query = `SELECT sh.*, s.schedule_name
+  const query = `SELECT sh.*, s.schedule_name, s.area
       FROM schedule_history sh
       JOIN schedules s ON sh.schedule_id = s.id
       ORDER BY sh.id DESC
@@ -36,6 +36,7 @@ export const getScheduleHistorys = async (page = 1, limit = 10) => {
     ...row,
     start_time: convertDateTime(row.start_time),
     stop_time: convertDateTime(row.stop_time),
+    area: `Area ${row.area}`,
   }));
 };
 
