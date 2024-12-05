@@ -1,8 +1,21 @@
-import { getNotifications as serviceGetNotifications } from "../services/NotificationService.js";
+import {
+  getNotifications as serviceGetNotifications,
+  getNotificationsWeb as serviceGetNotificationsWeb,
+} from "../services/NotificationService.js";
 
 export const getNotifications = async (req, res) => {
   try {
     const notification = await serviceGetNotifications();
+    res.status(200).json(notification);
+  } catch (error) {
+    console.log("Controller:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+export const getNotificationsWeb = async (req, res) => {
+  try {
+    const notification = await serviceGetNotificationsWeb();
     res.status(200).json(notification);
   } catch (error) {
     console.log("Controller:", error);

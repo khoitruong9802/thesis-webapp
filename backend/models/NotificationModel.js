@@ -8,11 +8,11 @@ export const getNotifications = async () => {
 };
 
 // Create a new user
-export const createNotification = async (message) => {
+export const createNotification = async (message, createAt) => {
   const query = `
-    INSERT INTO notifications (fertilizer_device_id, message, is_read)
-    VALUES ($1, $2, $3) RETURNING *`;
-  const { rows } = await pool.query(query, [1, message, false]);
+    INSERT INTO notifications (fertilizer_device_id, message, is_read, create_at)
+    VALUES ($1, $2, $3, $4) RETURNING *`;
+  const { rows } = await pool.query(query, [1, message, false, createAt]);
 
   return rows[0];
 };

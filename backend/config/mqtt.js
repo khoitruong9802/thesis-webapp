@@ -76,7 +76,7 @@ const startMqttClient = () => {
             scheduleId: data.schedule_id,
           });
         }
-        await createNotification(data.message);
+        await createNotification(data.message, data.timestamp);
         publish("18faa0dd7a927906cb3e/feeds/notification", data.message, 1);
       } catch (error) {
         console.log("MQTT:", error);

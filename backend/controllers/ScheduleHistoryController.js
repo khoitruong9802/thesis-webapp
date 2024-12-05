@@ -2,7 +2,8 @@ import { getScheduleHistorys as serviceGetScheduleHistorys } from "../services/S
 
 export const getScheduleHistorys = async (req, res) => {
   try {
-    const scheduleHistory = await serviceGetScheduleHistorys();
+    const { page, limit } = req.query;
+    const scheduleHistory = await serviceGetScheduleHistorys(page, limit);
     res.status(200).json(scheduleHistory);
   } catch (error) {
     console.log("Controller:", error);
