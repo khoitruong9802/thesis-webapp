@@ -1,6 +1,7 @@
 import mqtt from "mqtt";
 import dotenv from "dotenv";
 import { createNotification } from "../services/NotificationService.js";
+import { createScheduleHistory } from "../services/ScheduleHistoryService.js";
 
 dotenv.config();
 
@@ -61,17 +62,22 @@ const startMqttClient = () => {
   });
 
   // Example: Listen for a specific topic (optional)
-  client.on("message", (topic, message) => {
+  client.on("message", async (topic, message) => {
     console.log(`Received message on ${topic}: ${message.toString()}`);
 
     if (topic === "18faa0dd7a927906cb3e/feeds/gateway-send") {
       try {
-        createNotification(message.toString());
-        publish(
-          "18faa0dd7a927906cb3e/feeds/notification",
-          message.toString(),
-          1
-        );
+        const data = JSON.parse(message.toString());
+        if (data.message_type === "schedule_end") {
+          await createScheduleHistory({
+            startTime: data.task_start_time,
+            stopTime: data.task_end_time,
+            result: 1,
+            scheduleId: data.schedule_id,
+          });
+        }
+        await createNotification(data.message);
+        publish("18faa0dd7a927906cb3e/feeds/notification", data.message, 1);
       } catch (error) {
         console.log("MQTT:", error);
       }
