@@ -1,11 +1,12 @@
+import { LoadingOutlined } from "@ant-design/icons";
 import { Spin } from "antd";
-import { Fragment } from "react";
 
-const Loading = ({ children, isLoading }) => {
-
+const Loading = () => {
   return (
-    isLoading ? <Spin>{children}</Spin> : <Fragment>{children}</Fragment>
-  )
-}
+    <div className="w-full h-screen flex items-center justify-center">
+      <Spin indicator={<LoadingOutlined spin />} size="large" />
+    </div>
+  );
+};
 
 export default Loading;

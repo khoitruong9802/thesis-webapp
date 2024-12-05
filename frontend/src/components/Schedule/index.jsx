@@ -1,14 +1,59 @@
 import { useState } from "react";
+import Button from "../Button";
+import { DeleteFilled, EditFilled } from "@ant-design/icons";
+import { Popconfirm, notification } from "antd";
+import {
+  deleteSchedule,
+  getSchedules,
+  setEditId,
+  setShowForm,
+} from "../../store/slices/scheduleSlice";
+import { useDispatch } from "react-redux";
+
+const dayMapping = ["", "", "Mon", "Tues", "Wed", "Thurs", "Fri", "Sat", "Sun"];
 
 const Schedule = ({
+  id,
   scheduleName,
-  startTime,
-  stopTime,
+  priority,
+  area,
+  description,
   flow1,
   flow2,
   flow3,
+  cycle,
+  status,
+  startTime,
+  stopTime,
+  scheduleType,
+  startDay,
+  endDay,
+  days,
 }) => {
-  const [active, setActive] = useState(true);
+  const [active, setActive] = useState(status);
+  const dispatch = useDispatch();
+
+  const handleDelete = () => {
+    dispatch(deleteSchedule(id))
+      .unwrap()
+      .then(() => {
+        dispatch(getSchedules([1, 4]));
+        notification.success({
+          message: "Notification",
+          duration: 10,
+          description: "Schedule deleted successfully",
+        });
+      })
+      .catch((error) => {
+        console.log(error);
+        notification.error({
+          message: "Notification",
+          duration: 10,
+          description: error,
+        });
+      });
+  };
+
   return (
     <div className="flex flex-wrap items-center justify-between p-4 border-2 border-gray-200 rounded-md bg-white cursor-pointer gap-y-2 hover:shadow-md hover:scale-[1.02] duration-200">
       <div className="flex gap-x-4">
@@ -31,8 +76,37 @@ const Schedule = ({
           </div>
         </div>
       </div>
-      <div className="flex gap-x-8">
-        <p className="font-medium">Every day</p>
+      <div className="flex flex-col gap-y-2 items-center">
+        <div className="flex gap-x-2">
+          <Button
+            color="indigo"
+            onClick={() => {
+              dispatch(setEditId(id));
+              dispatch(setShowForm(true));
+            }}
+          >
+            <EditFilled />
+          </Button>
+          <Popconfirm
+            title="Delete the schedule"
+            description="Are you sure to delete this schedule?"
+            onConfirm={handleDelete}
+            okText="Yes"
+            cancelText="No"
+          >
+            <Button color="red">
+              <DeleteFilled />
+            </Button>
+          </Popconfirm>
+        </div>
+
+        <p className="font-medium">
+          {scheduleType === "Daily"
+            ? "Every day"
+            : scheduleType === "Weekly"
+            ? days.map((day) => dayMapping[day]).toString()
+            : startDay}
+        </p>
         <label
           onClick={(event) => {
             event.stopPropagation();
