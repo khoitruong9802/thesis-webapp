@@ -3,16 +3,48 @@ import path from "path";
 import { __dirname } from "../utils/helper.js";
 
 // Helper function to get the latest version
-function getCurrentVersion(directory) {
+export const getCurrentVersion = (directory) => {
   const files = fs.readdirSync(directory);
   const versions = files.map((file) => {
-    const match = file.match(/Version (\d+\.\d+)/);
+    const match = file.match(/firmware_(\d+\.\d+)/);
     return match ? parseFloat(match[1]) : 0;
   });
   return Math.max(...versions, 1.0); // Start at version 1.0 if none exist
-}
+};
 
 // Serve the list of uploaded files on GET /upload
+export const getAllFileName = (req, res) => {
+  const uploadDir = path.join(__dirname, "uploads");
+
+  fs.readdir(uploadDir, (err, files) => {
+    if (err) {
+      return res.status(500).send("Unable to scan directory: " + err);
+    }
+
+    // Sort files by modification time (newest first)
+    files.sort((a, b) => {
+      return (
+        fs.statSync(path.join(uploadDir, b)).mtime -
+        fs.statSync(path.join(uploadDir, a)).mtime
+      );
+    });
+
+    let otaUpdates = files.map((file, index) => {
+      const filePath = path.join(uploadDir, file);
+      const stats = fs.statSync(filePath);
+      const timestamp = new Date(stats.mtime).toLocaleString(); // Get last modified time
+
+      return {
+        id: index + 1, // Assign the latest file as id=1
+        date: timestamp,
+        version: file,
+      };
+    });
+
+    res.status(200).json(otaUpdates);
+  });
+};
+
 export const getUpload = (req, res) => {
   const uploadDir = path.join(__dirname, "uploads");
 
@@ -29,29 +61,7 @@ export const getUpload = (req, res) => {
       );
     });
 
-    // let fileList = files
-    //   .map((file) => `<li><a href="/uploads/${file}">${file}</a></li>`)
-    //   .join("");
-    // const html = `
-    //   <h1>Uploaded Files</h1>
-    //   <ul>${fileList}</ul>
-    // `;
-
-    let otaUpdates = files.map((file, index) => {
-      const filePath = path.join(uploadDir, file);
-      const stats = fs.statSync(filePath);
-      const timestamp = new Date(stats.mtime).toLocaleString(); // Get last modified time
-      const version = file.split("_")[0]; // Extract version from filename
-
-      return {
-        id: index + 1, // Assign the latest file as id=1
-        date: timestamp,
-        version: version,
-      };
-    });
-
-    // res.send(html);
-    res.json(otaUpdates);
+    res.status(200).json(files[0]);
   });
 };
 
@@ -78,7 +88,7 @@ export const postUpload = (req, res) => {
   // const uploadPath = path.join(__dirname, "uploads", newFileName);
 
   // Create the new file name with version number, without including the extension
-  const newFileName = `Version ${newVersion}`;
+  const newFileName = `firmware_${newVersion}`;
   const uploadPath = path.join(uploadDir, `${newFileName}`); // Keep original extension in the actual file
 
   uploadedFile.mv(uploadPath, (err) => {
