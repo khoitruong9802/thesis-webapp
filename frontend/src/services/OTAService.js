@@ -1,7 +1,7 @@
 import request from "../utils/http";
 
 export const getVersion = async () => {
-  const res = await request.get("/OTA/upload");
+  const res = await request.get("/OTA/all");
   return res;
 };
 

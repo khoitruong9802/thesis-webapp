@@ -1,5 +1,4 @@
 import Overview from "../pages/Overview";
-import Example from "../pages/Example";
 import About from "../pages/About";
 import Login from "../pages/Login";
 import SignUp from "../pages/SignUp";
@@ -43,10 +42,6 @@ export const publicRoutes = [
 ];
 
 export const privateRoutes = [
-  {
-    path: "/example",
-    component: Example,
-  },
   {
     path: "/dashboard",
     component: Dashboard,
