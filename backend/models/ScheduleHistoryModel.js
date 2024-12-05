@@ -9,7 +9,6 @@ export const getScheduleHistorys = async (page = 1, limit = 10) => {
       LIMIT $1 OFFSET $2;`;
 
   const options = {
-    timeZone: "Asia/Bangkok",
     year: "numeric",
     month: "2-digit",
     day: "2-digit",
