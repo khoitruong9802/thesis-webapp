@@ -7,31 +7,31 @@ import { createSensorData } from "../services/SensorDataService.js";
 dotenv.config();
 
 const topics = [
-  "area1/humi",
-  "area1/temp",
-  "area1/nito",
-  "area1/photpho",
-  "area1/kali",
-  "area2/humi",
-  "area2/temp",
-  "area2/nito",
-  "area2/photpho",
-  "area2/kali",
-  "area3/humi",
-  "area3/temp",
-  "area3/nito",
-  "area3/photpho",
-  "area3/kali",
-  "relay1",
-  "relay2",
-  "relay3",
-  "relay4",
-  "relay5",
-  "relay6",
-  "relay7",
-  "relay8",
-  "schedules",
-  "gateway-send",
+  ["area1/humi", 2],
+  ["area1/temp", 2],
+  ["area1/nito", 2],
+  ["area1/photpho", 2],
+  ["area1/kali", 2],
+  ["area2/humi", 2],
+  ["area2/temp", 2],
+  ["area2/nito", 2],
+  ["area2/photpho", 2],
+  ["area2/kali", 2],
+  ["area3/humi", 2],
+  ["area3/temp", 2],
+  ["area3/nito", 2],
+  ["area3/photpho", 2],
+  ["area3/kali", 2],
+  ["relay1", 2],
+  ["relay2", 2],
+  ["relay3", 2],
+  ["relay4", 2],
+  ["relay5", 2],
+  ["relay6", 2],
+  ["relay7", 2],
+  ["relay8", 2],
+  ["schedules", 2],
+  ["gateway-send", 2],
 ];
 
 let client;
@@ -51,14 +51,13 @@ const startMqttClient = () => {
   client.on("connect", () => {
     console.log("Connected to MQTT broker");
 
-    topics.forEach((value) => {
-      client.subscribe(`18faa0dd7a927906cb3e/feeds/${value}`, (err) => {
+    topics.forEach(([topic, qos]) => {
+      const fullTopic = `18faa0dd7a927906cb3e/feeds/${topic}`;
+      client.subscribe(fullTopic, { qos }, (err) => {
         if (err) {
           console.error("Subscription error:", err);
         } else {
-          console.log(
-            `Subscribed to topic: 18faa0dd7a927906cb3e/feeds/${value}`
-          );
+          console.log(`Subscribed to topic: ${fullTopic} with QoS: ${qos}`);
         }
       });
     });
