@@ -7,6 +7,13 @@ export const getNotifications = async () => {
   return rows;
 };
 
+export const getNotificationsWeb = async () => {
+  const query = "SELECT * FROM notifications ORDER BY id DESC";
+  const { rows } = await pool.query(query);
+
+  return rows;
+};
+
 // Create a new user
 export const createNotification = async (message, createAt) => {
   const query = `

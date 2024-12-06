@@ -1,5 +1,6 @@
 import {
   getNotifications as modelGetNotifications,
+  getNotificationsWeb as modelGetNotificationsWeb,
   createNotification as modelCreateNotification,
 } from "../models/NotificationModel.js";
 
@@ -15,7 +16,7 @@ export const getNotifications = async () => {
 
 export const getNotificationsWeb = async () => {
   try {
-    const result = await modelGetNotifications();
+    const result = await modelGetNotificationsWeb();
     return result;
   } catch (error) {
     console.log("Service:", error);

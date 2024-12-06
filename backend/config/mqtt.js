@@ -2,15 +2,26 @@ import mqtt from "mqtt";
 import dotenv from "dotenv";
 import { createNotification } from "../services/NotificationService.js";
 import { createScheduleHistory } from "../services/ScheduleHistoryService.js";
+import { createSensorData } from "../services/SensorDataService.js";
 
 dotenv.config();
 
 const topics = [
-  "humi",
-  "temp",
-  "nito",
-  "photpho",
-  "kali",
+  "area1/humi",
+  "area1/temp",
+  "area1/nito",
+  "area1/photpho",
+  "area1/kali",
+  "area2/humi",
+  "area2/temp",
+  "area2/nito",
+  "area2/photpho",
+  "area2/kali",
+  "area3/humi",
+  "area3/temp",
+  "area3/nito",
+  "area3/photpho",
+  "area3/kali",
   "relay1",
   "relay2",
   "relay3",
@@ -80,6 +91,42 @@ const startMqttClient = () => {
         publish("18faa0dd7a927906cb3e/feeds/notification", data.message, 1);
       } catch (error) {
         console.log("MQTT:", error);
+      }
+    } else if (topic.includes("area1")) {
+      if (topic.includes("humi")) {
+        createSensorData("humi", message.toString(), 1);
+      } else if (topic.includes("temp")) {
+        createSensorData("temp", message.toString(), 1);
+      } else if (topic.includes("nito")) {
+        createSensorData("nito", message.toString(), 1);
+      } else if (topic.includes("photpho")) {
+        createSensorData("photpho", message.toString(), 1);
+      } else if (topic.includes("kali")) {
+        createSensorData("kali", message.toString(), 1);
+      }
+    } else if (topic.includes("area2")) {
+      if (topic.includes("humi")) {
+        createSensorData("humi", message.toString(), 2);
+      } else if (topic.includes("temp")) {
+        createSensorData("temp", message.toString(), 2);
+      } else if (topic.includes("nito")) {
+        createSensorData("nito", message.toString(), 2);
+      } else if (topic.includes("photpho")) {
+        createSensorData("photpho", message.toString(), 2);
+      } else if (topic.includes("kali")) {
+        createSensorData("kali", message.toString(), 2);
+      }
+    } else if (topic.includes("area3")) {
+      if (topic.includes("humi")) {
+        createSensorData("humi", message.toString(), 3);
+      } else if (topic.includes("temp")) {
+        createSensorData("temp", message.toString(), 3);
+      } else if (topic.includes("nito")) {
+        createSensorData("nito", message.toString(), 3);
+      } else if (topic.includes("photpho")) {
+        createSensorData("photpho", message.toString(), 3);
+      } else if (topic.includes("kali")) {
+        createSensorData("kali", message.toString(), 3);
       }
     }
   });

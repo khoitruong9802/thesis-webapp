@@ -6,6 +6,7 @@ import fertilizerDevice from "./FertilizerDeviceRouter.js";
 import notification from "./NotificationRouter.js";
 import threshold from "./ThresholdRouter.js";
 import scheduleHistory from "./ScheduleHistoryRouter.js";
+import sensorData from "./SensorDataRouter.js";
 
 import { __dirname } from "../utils/helper.js";
 import path from "path";
@@ -18,6 +19,7 @@ const initWebRoutes = (app) => {
   app.use("/api/v1/notification", notification);
   app.use("/api/v1/threshold", threshold);
   app.use("/api/v1/schedule-history", scheduleHistory);
+  app.use("/api/v1/sensor-data", sensorData);
 };
 
 export default initWebRoutes;
