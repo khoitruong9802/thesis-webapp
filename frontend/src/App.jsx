@@ -54,7 +54,7 @@ function App() {
                 <Route
                   key={item.path}
                   path={item.path}
-                  element={<Navigate key={item.path} to="/" />}
+                  element={<Navigate key={item.path} to="/login" />}
                 />
               );
             }

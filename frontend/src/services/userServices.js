@@ -30,8 +30,9 @@ export const getNewToken = async (refreshToken) => {
 };
 
 export const logoutUser = async () => {
-  const res = await request.post("/user/logout");
-  return res.data;
+  localStorage.removeItem("refreshToken");
+  // const res = await request.post("/user/logout");
+  // return res.data;
 };
 
 // export const updateUser = async (id, data, accessToken) => {

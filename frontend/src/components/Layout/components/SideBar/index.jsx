@@ -9,8 +9,8 @@ import {
   BarChartOutlined,
 } from "@ant-design/icons";
 import { Badge } from "antd";
-// import { logoutAdmin } from "../../../services/adminService";
-import { useSelector } from "react-redux";
+import { logoutUser } from "../../../../services/userServices";
+// import { useSelector } from "react-redux";
 
 const currentPage = () => {
   let index = routes.above.findIndex(
@@ -65,7 +65,7 @@ const Sidebar = ({ isSidebarOpen, closeSidebar }) => {
 
   const logout = async () => {
     try {
-      // await logoutAdmin();
+      await logoutUser();
       location.reload();
     } catch (error) {
       console.log(error);
@@ -119,6 +119,18 @@ const Sidebar = ({ isSidebarOpen, closeSidebar }) => {
             {routes.below.map((link, index) => {
               const { path, name } = link;
               index += routes.above.length;
+              if (path === "/log-out") {
+                return (
+                  <div
+                    key={index}
+                    onClick={() => logout()}
+                    className="capitalize flex items-center px-4 py-2 mt-5 hover:text-blue-800 transition-colors duration-200 transform rounded-md text-gray-500 cursor-pointer"
+                  >
+                    <link.icon className="text-xl" />
+                    <span className="mx-4 font-medium">{name}</span>
+                  </div>
+                );
+              }
               return (
                 <Link
                   key={index}
@@ -143,7 +155,7 @@ const Sidebar = ({ isSidebarOpen, closeSidebar }) => {
               className="h-9 w-9 mx-2 object-center object-cover rounded-full"
             />
             <h4 className="mx-2 font-medium text-gray-800 hover:underline cursor-pointer">
-              {"admin.fullName"}
+              {"Admin"}
             </h4>
           </div>
         </div>

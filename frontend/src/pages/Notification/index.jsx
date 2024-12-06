@@ -1,6 +1,10 @@
 import { BellFilled } from "@ant-design/icons";
+import { useEffect, useState } from "react";
+import { getNotifications } from "../../services/notificationService";
+import { convertSnakeToCamel } from "../../utils/helper";
 
 const Notification = () => {
+  const [notifications, setNotifications] = useState([]);
   // const notifications = [
   //   "(2024-12-05 11:38:44) Lich tuoi dao has been completed",
   //   "(2024-12-05 11:38:33) Lich tuoi dao is 80.0% complete",
@@ -8,33 +12,48 @@ const Notification = () => {
   //   "(2024-12-05 11:38:11) Lich tuoi dao is 40.0% complete",
   //   "(2024-12-05 11:38:00) Lich tuoi dao is 20.0% complete"
   // ]
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      const res = await getNotifications();
+      const result = res.data.map((item) => convertSnakeToCamel(item));
+      setNotifications(
+        result.map((item) => ({
+          ...item,
+          message: item.message.slice(22),
+          createAt: item.message.slice(1, 20),
+        }))
+      );
+    };
 
-  const notifications = [
-    {
-      id: 1,
-      message: "Your schedule is running successfully",
-      createAt: "10:30 AM",
-      isRead: false,
-    },
-    {
-      id: 2,
-      message: "Warning: High nitrogen detected!",
-      createAt: "09:45 AM",
-      isRead: false,
-    },
-    {
-      id: 3,
-      message: "Morning routine completed",
-      createAt: "08:15 AM",
-      isRead: true,
-    },
-    {
-      id: 4,
-      message: "New update available for your system",
-      createAt: "07:00 AM",
-      isRead: true,
-    },
-  ];
+    fetchNotifications();
+  }, []);
+
+  // const notifications = [
+  //   {
+  //     id: 1,
+  //     message: "Your schedule is running successfully",
+  //     createAt: "10:30 AM",
+  //     isRead: false,
+  //   },
+  //   {
+  //     id: 2,
+  //     message: "Warning: High nitrogen detected!",
+  //     createAt: "09:45 AM",
+  //     isRead: false,
+  //   },
+  //   {
+  //     id: 3,
+  //     message: "Morning routine completed",
+  //     createAt: "08:15 AM",
+  //     isRead: true,
+  //   },
+  //   {
+  //     id: 4,
+  //     message: "New update available for your system",
+  //     createAt: "07:00 AM",
+  //     isRead: true,
+  //   },
+  // ];
 
   return (
     <div className="flex flex-col w-full p-6">

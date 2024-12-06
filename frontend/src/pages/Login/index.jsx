@@ -75,98 +75,100 @@ const Login = () => {
     alert("Google login failed. Please try again.");
   };
 
+  if (isLoading) {
+    return <Loading />;
+  }
+
   return (
-    <Loading isLoading={isLoading}>
-      <div className="flex justify-center items-start h-screen">
-        <div className="flex flex-col gap-y-4">
-          <div className="flex flex-col gap-y-6 mt-10 p-8 rounded-md w-[350px] border border-blue-300">
-            <p className="text-center text-xl font-bold">Smart farm</p>
-            <div className="flex flex-col gap-y-2">
-              <div className="relative">
-                <input
-                  type="text"
-                  id="username"
-                  value={formData.username}
-                  onChange={(e) => {
-                    setFormData((prev) => ({
-                      ...prev,
-                      username: e.target.value,
-                    }));
-                  }}
-                  className="block w-full pt-3 pb-1 px-3 text-gray-900 bg-transparent rounded-md border border-blue-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                  placeholder=""
-                  required
-                />
-                <label
-                  htmlFor="username"
-                  className={`cursor-text absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2.5 left-3 origin-[0] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-3`}
-                >
-                  Username
-                </label>
-              </div>
-
-              <div className="relative">
-                <input
-                  type="password"
-                  id="password"
-                  value={formData.password}
-                  onChange={(e) => {
-                    setFormData((prev) => ({
-                      ...prev,
-                      password: e.target.value,
-                    }));
-                  }}
-                  className="block w-full pt-3 pb-1 px-3 text-gray-900 bg-transparent rounded-md border border-blue-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                  placeholder=""
-                  required
-                />
-                <label
-                  htmlFor="password"
-                  className={`cursor-text absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2.5 left-3 origin-[0] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-3`}
-                >
-                  Password
-                </label>
-              </div>
-
-              <button
-                onClick={login}
-                className="bg-blue-500 rounded-xl font-medium text-white p-[6px] mt-1 hover:bg-blue-600"
-              >
-                Log in
-              </button>
-
-              <p className="text-red-600 text-sm">{errMessage}</p>
-            </div>
-
-            <div className="flex items-center justify-between">
-              <div className="w-[110px] h-[1px] bg-gray-300"></div>
-              <p className="text-sm font-medium text-gray-500">OR</p>
-              <div className="w-[110px] h-[1px] bg-gray-300"></div>
-            </div>
-
-            <div className="flex justify-center">
-              <GoogleLogin
-                onSuccess={handleLoginSuccess}
-                onError={handleLoginFailure}
-                useOneTap
+    <div className="flex justify-center items-start h-screen">
+      <div className="flex flex-col gap-y-4">
+        <div className="flex flex-col gap-y-6 mt-10 p-8 rounded-md w-[350px] border border-blue-300">
+          <p className="text-center text-xl font-bold">Smart farm</p>
+          <div className="flex flex-col gap-y-2">
+            <div className="relative">
+              <input
+                type="text"
+                id="username"
+                value={formData.username}
+                onChange={(e) => {
+                  setFormData((prev) => ({
+                    ...prev,
+                    username: e.target.value,
+                  }));
+                }}
+                className="block w-full pt-3 pb-1 px-3 text-gray-900 bg-transparent rounded-md border border-blue-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                placeholder=""
+                required
               />
+              <label
+                htmlFor="username"
+                className={`cursor-text absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2.5 left-3 origin-[0] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-3`}
+              >
+                Username
+              </label>
             </div>
 
-            <div className="text-center cursor-pointer">
-              <p className="text-xs text-gray-700">Forgot password?</p>
+            <div className="relative">
+              <input
+                type="password"
+                id="password"
+                value={formData.password}
+                onChange={(e) => {
+                  setFormData((prev) => ({
+                    ...prev,
+                    password: e.target.value,
+                  }));
+                }}
+                className="block w-full pt-3 pb-1 px-3 text-gray-900 bg-transparent rounded-md border border-blue-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                placeholder=""
+                required
+              />
+              <label
+                htmlFor="password"
+                className={`cursor-text absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2.5 left-3 origin-[0] peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-3`}
+              >
+                Password
+              </label>
             </div>
+
+            <button
+              onClick={login}
+              className="bg-blue-500 rounded-xl font-medium text-white p-[6px] mt-1 hover:bg-blue-600"
+            >
+              Log in
+            </button>
+
+            <p className="text-red-600 text-sm">{errMessage}</p>
           </div>
-          <div className="border border-blue-300 p-4 rounded-md text-center">
-            <p>
-              Don&apos;t have an account?{" "}
-              <span className="text-blue-500 font-bold cursor-pointer">
-                <Link to="/signup">Sign up</Link>
-              </span>
-            </p>
+
+          <div className="flex items-center justify-between">
+            <div className="w-[110px] h-[1px] bg-gray-300"></div>
+            <p className="text-sm font-medium text-gray-500">OR</p>
+            <div className="w-[110px] h-[1px] bg-gray-300"></div>
+          </div>
+
+          <div className="flex justify-center">
+            <GoogleLogin
+              onSuccess={handleLoginSuccess}
+              onError={handleLoginFailure}
+              useOneTap
+            />
+          </div>
+
+          <div className="text-center cursor-pointer">
+            <p className="text-xs text-gray-700">Forgot password?</p>
           </div>
         </div>
+        <div className="border border-blue-300 p-4 rounded-md text-center">
+          <p>
+            Don&apos;t have an account?{" "}
+            <span className="text-blue-500 font-bold cursor-pointer">
+              <Link to="/signup">Sign up</Link>
+            </span>
+          </p>
+        </div>
       </div>
-    </Loading>
+    </div>
   );
 };
 

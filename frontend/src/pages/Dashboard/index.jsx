@@ -5,52 +5,67 @@ import ScheduleForm from "../../components/ScheduleForm";
 import Button from "../../components/Button";
 import Loading from "../../components/Loading";
 import Error from "../../components/Error";
+import Area from "../../components/Area";
 import { Modal, Pagination } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
-import { useEffect, useState } from "react";
-import { convertSnakeToCamel } from "../../utils/helper";
+import { useEffect, useRef, useState } from "react";
+import mqtt from "mqtt";
 import { useSelector, useDispatch } from "react-redux";
 import {
   getSchedules,
   setCurrentPage,
   setEditId,
   setShowForm,
-  createSchedule,
-  updateSchedule,
-  deleteSchedule,
 } from "../../store/slices/scheduleSlice";
 
-const sensor = [
+const initialSensor = [
   {
+    id: "temp",
     value: 28.5,
     unit: "°C",
     label: "Soil temperature",
     color: "text-red-600",
   },
   {
+    id: "humi",
     value: 65.2,
     unit: "%",
     label: "Soil humidity",
     color: "text-blue-600",
   },
   {
+    id: "nito",
     value: 40.2,
     unit: "mg/kg",
     label: "Soil nitrogen",
     color: "text-indigo-600",
   },
   {
+    id: "photpho",
     value: 20.3,
     unit: "mg/kg",
     label: "Soil phosphorus",
     color: "text-indigo-600",
   },
   {
+    id: "kali",
     value: 15.5,
     unit: "mg/kg",
     label: "Soil potassium",
     color: "text-indigo-600",
   },
+];
+
+const areas = [{ areaId: 1 }, { areaId: 2 }, { areaId: 3 }];
+
+const brokerUrl = `ws://${import.meta.env.VITE_MQTT_BROKER_URL}:${
+  import.meta.env.VITE_MQTT_BROKER_PORT
+}`;
+const topic = [
+  "",
+  "18faa0dd7a927906cb3e/feeds/area1/#",
+  "18faa0dd7a927906cb3e/feeds/area2/#",
+  "18faa0dd7a927906cb3e/feeds/area3/#",
 ];
 
 function Dashboard() {
@@ -64,6 +79,50 @@ function Dashboard() {
     showForm,
   } = useSelector((state) => state.schedule);
   const dispatch = useDispatch();
+
+  const mqttClient = useRef();
+
+  const [areaSelected, setAreaSelected] = useState(1);
+  const [sensor, setSensor] = useState(initialSensor);
+
+  useEffect(() => {
+    // Connect to the broker
+    mqttClient.current = mqtt.connect(brokerUrl, {
+      username: import.meta.env.VITE_MQTT_BROKER_USERNAME,
+      password: import.meta.env.VITE_MQTT_BROKER_PASSWORD,
+    });
+
+    // On connection
+    mqttClient.current.on("connect", () => {
+      console.log("Connected to MQTT broker");
+      mqttClient.current.subscribe(topic[areaSelected], (err) => {
+        if (err) {
+          console.error("Failed to subscribe:", err);
+        } else {
+          console.log(`Subscribed to topic: ${topic[areaSelected]}`);
+        }
+      });
+    });
+
+    // On message received
+    mqttClient.current.on("message", (topic, message) => {
+      console.log(`Message received on ${topic}: ${message.toString()}`);
+      setSensor((prev) =>
+        prev.map((item) =>
+          topic.includes(item.id)
+            ? { ...item, value: Number(message.toString()) }
+            : item
+        )
+      );
+    });
+
+    // Cleanup on component unmount
+    return () => {
+      mqttClient.current.end(() => {
+        console.log("Disconnected to MQTT broker");
+      }); // Disconnect from the broker
+    };
+  }, [areaSelected]);
 
   useEffect(() => {
     dispatch(getSchedules([1, 4]));
@@ -85,13 +144,23 @@ function Dashboard() {
   return (
     <div className="flex gap-8 flex-col h-screen p-4 relative">
       <div className="bg-white rounded-lg shadow-md p-4 w-full border border-gray-200">
-        <h2 className="text-2xl font-bold mb-4">Sensor value</h2>
+        <div className="flex items-center mb-4 gap-x-4">
+          <h2 className="text-2xl font-bold">Sensor value</h2>
+          {areas.map((area) => (
+            <div key={area.areaId} onClick={() => setAreaSelected(area.areaId)}>
+              <Area
+                areaId={area.areaId}
+                selected={area.areaId === areaSelected}
+              />
+            </div>
+          ))}
+        </div>
 
         {/* <h1 className="text-3xl font-bold text-gray-800 mb-5">Sensors</h1> */}
         <div className="flex justify-around items-center flex-wrap gap-4 mb-8">
-          {sensor.map((item, index) => (
+          {sensor.map((item) => (
             <SensorCard
-              key={index}
+              key={item.id}
               value={item.value}
               unit={item.unit}
               label={item.label}
