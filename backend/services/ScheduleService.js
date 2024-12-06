@@ -45,7 +45,7 @@ export const createSchedule = async (schedule) => {
       flow1,
       flow2,
       flow3,
-      cycle,
+      cycle = 2,
       status,
       start_time,
       stop_time,
