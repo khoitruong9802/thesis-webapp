@@ -32,7 +32,13 @@ export const getAllFileName = (req, res) => {
     let otaUpdates = files.map((file, index) => {
       const filePath = path.join(uploadDir, file);
       const stats = fs.statSync(filePath);
-      const timestamp = new Date(stats.mtime).toLocaleString(); // Get last modified time
+      const originalTime = new Date(stats.mtime);
+      // Increase time by 7 hours
+      const incrementedTime = new Date(
+        originalTime.getTime() + 7 * 60 * 60 * 1000
+      );
+      // Format the incremented time as a string
+      const timestamp = incrementedTime.toLocaleString();
 
       return {
         id: index + 1, // Assign the latest file as id=1
