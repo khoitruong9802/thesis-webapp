@@ -36,6 +36,7 @@ export const getSensorDataAreaWeb = async (area) => {
         const date = new Date(item.create_at);
 
         const options = {
+          timeZone: "Asia/Bangkok",
           hour: "2-digit",
           minute: "2-digit",
         };
