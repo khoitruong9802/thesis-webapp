@@ -7,6 +7,20 @@ export const getNotifications = async () => {
   return rows;
 };
 
+export const getNotificationsUnread = async () => {
+  const query = "SELECT COUNT(*) FROM notifications WHERE is_read=false";
+  const { rows } = await pool.query(query);
+
+  return rows[0];
+};
+
+export const setReadAll = async () => {
+  const query = "UPDATE public.notifications SET is_read = true";
+  const { rows } = await pool.query(query);
+
+  return rows;
+};
+
 export const getNotificationsWeb = async () => {
   const query = "SELECT * FROM notifications ORDER BY id DESC";
   const { rows } = await pool.query(query);

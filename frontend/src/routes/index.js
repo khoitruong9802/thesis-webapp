@@ -1,5 +1,3 @@
-import Overview from "../pages/Overview";
-import About from "../pages/About";
 import Login from "../pages/Login";
 import SignUp from "../pages/SignUp";
 import NotFound from "../pages/NotFound";
@@ -25,14 +23,6 @@ export const publicRoutes = [
     path: "/signup",
     component: SignUp,
     layout: null,
-  },
-  {
-    path: "/overview",
-    component: Overview,
-  },
-  {
-    path: "/about",
-    component: About,
   },
   {
     path: "*",

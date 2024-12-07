@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   numberOfNotification: 0,
+  notifications: [],
 };
 
 export const notificationSlice = createSlice({
@@ -11,15 +12,24 @@ export const notificationSlice = createSlice({
     resetState: () => {
       return initialState;
     },
+    setNotifications: (state, action) => {
+      state.notifications = action.payload;
+    },
     setNumberOfNotification: (state, action) => {
-      state.notifications = action.payload.data;
-      state.totalNotification = action.payload.totalCount;
+      state.numberOfNotification = action.payload;
+    },
+    increaseOne: (state) => {
+      state.numberOfNotification++;
     },
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { resetState, setNumberOfNotification } =
-  notificationSlice.actions;
+export const {
+  resetState,
+  setNumberOfNotification,
+  increaseOne,
+  setNotifications,
+} = notificationSlice.actions;
 
 export default notificationSlice.reducer;

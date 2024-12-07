@@ -2,10 +2,15 @@ import { useState, useEffect } from "react";
 import ChartList from "../../components/LineChart";
 import { CalendarFilled } from "@ant-design/icons";
 import { getScheduleHistorys } from "../../services/scheduleHistoryService";
+import { getSensorData } from "../../services/sensorDataService";
 import { convertSnakeToCamel } from "../../utils/helper";
+import Area from "../../components/Area";
+
+const areas = [{ areaId: 1 }, { areaId: 2 }, { areaId: 3 }];
 
 const initialChartInfo = [
   {
+    id: "humi",
     chartData: [12, 53, 22, 33, 35],
     chartLabels: ["1", "2", "3", "4", "5"],
     title: "Humidity (%)",
@@ -14,6 +19,7 @@ const initialChartInfo = [
     color: "blue",
   },
   {
+    id: "temp",
     chartData: [12, 53, 100, 33, 35],
     chartLabels: ["1", "2", "3", "4", "5"],
     title: "Temperature (°C)",
@@ -22,6 +28,7 @@ const initialChartInfo = [
     color: "red",
   },
   {
+    id: "kali",
     chartData: [12, 53, 100, 33, 35],
     chartLabels: ["1", "2", "3", "4", "5"],
     title: "Kali (mg/kg)",
@@ -30,6 +37,7 @@ const initialChartInfo = [
     color: "purple",
   },
   {
+    id: "nito",
     chartData: [12, 53, 100, 33, 35],
     chartLabels: ["1", "2", "3", "4", "5"],
     title: "Nito (mg/kg)",
@@ -38,6 +46,7 @@ const initialChartInfo = [
     color: "purple",
   },
   {
+    id: "photpho",
     chartData: [12, 53, 100, 33, 35],
     chartLabels: ["1", "2", "3", "4", "5"],
     title: "Photpho (mg/kg)",
@@ -50,18 +59,41 @@ const initialChartInfo = [
 const History = () => {
   const [scheduleHistory, setScheduleHistory] = useState([]);
   const [chartInfo, setChartInfo] = useState(initialChartInfo);
-  console.log(chartInfo);
+  const [areaSelected, setAreaSelected] = useState(1);
 
   useEffect(() => {
     const fetchScheduleHistorys = async () => {
-      const res = await getScheduleHistorys();
-      console.log(res);
-      const result = res.data.data.map((item) => convertSnakeToCamel(item));
-      setScheduleHistory(result);
+      try {
+        const res = await getScheduleHistorys();
+        console.log(res);
+        const result = res.data.data.map((item) => convertSnakeToCamel(item));
+        setScheduleHistory(result);
+      } catch (error) {
+        console.log("Error", error);
+      }
     };
 
     fetchScheduleHistorys();
   }, []);
+
+  useEffect(() => {
+    const fetchSensorData = async () => {
+      try {
+        const res = await getSensorData(areaSelected);
+        setChartInfo((prev) =>
+          prev.map((item) => ({
+            ...item,
+            chartData: res.data[item.id].value,
+            chartLabels: res.data[item.id].labels,
+          }))
+        );
+      } catch (error) {
+        console.log("Error", error);
+      }
+    };
+
+    fetchSensorData();
+  }, [areaSelected]);
 
   return (
     <div className="flex flex-col p-6 w-full min-h-screen">
@@ -125,9 +157,19 @@ const History = () => {
 
       {/* Sensor Data Line Chart */}
       <div className="bg-white shadow rounded-lg p-6">
-        <h2 className="text-xl font-semibold text-gray-800 mb-4">
-          Sensor Data
-        </h2>
+        <div className="flex items-center mb-4 gap-x-4">
+          <h2 className="text-xl font-semibold text-gray-800">
+            Schedule History
+          </h2>
+          {areas.map((area) => (
+            <div key={area.areaId} onClick={() => setAreaSelected(area.areaId)}>
+              <Area
+                areaId={area.areaId}
+                selected={area.areaId === areaSelected}
+              />
+            </div>
+          ))}
+        </div>
         <div className="flex flex-wrap">
           {chartInfo.map((item, index) => (
             <div key={index} className="w-6/12">

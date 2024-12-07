@@ -1,11 +1,33 @@
 import {
   getNotifications as serviceGetNotifications,
   getNotificationsWeb as serviceGetNotificationsWeb,
+  getNotificationsUnread as serviceGetNotificationsUnread,
+  setReadAll as serviceSetReadAll,
 } from "../services/NotificationService.js";
 
 export const getNotifications = async (req, res) => {
   try {
     const notification = await serviceGetNotifications();
+    res.status(200).json(notification);
+  } catch (error) {
+    console.log("Controller:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+export const setReadAll = async (req, res) => {
+  try {
+    const notification = await serviceSetReadAll();
+    res.status(200).json(notification);
+  } catch (error) {
+    console.log("Controller:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+export const getNotificationsUnread = async (req, res) => {
+  try {
+    const notification = await serviceGetNotificationsUnread();
     res.status(200).json(notification);
   } catch (error) {
     console.log("Controller:", error);

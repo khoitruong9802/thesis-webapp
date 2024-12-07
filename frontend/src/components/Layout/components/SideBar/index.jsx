@@ -10,7 +10,7 @@ import {
 } from "@ant-design/icons";
 import { Badge } from "antd";
 import { logoutUser } from "../../../../services/userServices";
-// import { useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 
 const currentPage = () => {
   let index = routes.above.findIndex(
@@ -60,7 +60,7 @@ export const routes = {
 };
 
 const Sidebar = ({ isSidebarOpen, closeSidebar }) => {
-  // const admin = useSelector((state) => state.admin);
+  const { numberOfNotification } = useSelector((state) => state.notification);
   const [route, setRoute] = useState(currentPage);
 
   const logout = async () => {
@@ -105,7 +105,7 @@ const Sidebar = ({ isSidebarOpen, closeSidebar }) => {
                   }`}
                 >
                   {link.path === "/notification" ? (
-                    <Badge count={7}>
+                    <Badge count={numberOfNotification}>
                       <link.icon className="text-xl" />
                     </Badge>
                   ) : (
