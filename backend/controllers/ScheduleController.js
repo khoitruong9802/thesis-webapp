@@ -1,4 +1,5 @@
 import {
+  getAllSchedules as serviceGetAllSchedules,
   getSchedules as serviceGetSchedules,
   getScheduleById as serviceGetScheduleById,
   createSchedule as serviceCreateSchedule,
@@ -8,6 +9,16 @@ import {
 import { publish } from "../config/mqtt.js";
 
 const fertilizerCode = "18faa0dd7a927906cb3e";
+
+export const getAllSchedules = async (req, res) => {
+  try {
+    const schedules = await serviceGetAllSchedules();
+    res.status(200).json(schedules);
+  } catch (error) {
+    console.log("Controller:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
 
 export const getSchedules = async (req, res) => {
   try {

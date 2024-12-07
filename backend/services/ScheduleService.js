@@ -1,4 +1,5 @@
 import {
+  getAllSchedules as modelGetAllSchedules,
   getSchedules as modelGetSchedules,
   createSchedule as modelCreateSchedule,
   updateSchedule as modelUpdateSchedule,
@@ -7,6 +8,15 @@ import {
   getSchedulesCount as modelGetSchedulesCount,
 } from "../models/ScheduleModel.js";
 
+export const getAllSchedules = async () => {
+  try {
+    const result = await modelGetAllSchedules();
+    return result;
+  } catch (error) {
+    console.log("Service:", error);
+    throw new Error("Server error");
+  }
+};
 export const getSchedules = async (page = 1, limit = 10) => {
   try {
     const result = await modelGetSchedules(page, limit);
