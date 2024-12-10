@@ -7,7 +7,7 @@ import Loading from "../../components/Loading";
 import Error from "../../components/Error";
 import Area from "../../components/Area";
 import { Modal, Pagination } from "antd";
-import { PlusOutlined } from "@ant-design/icons";
+import { PlusOutlined, EnvironmentFilled } from "@ant-design/icons";
 import { useEffect, useRef, useState } from "react";
 import mqtt from "mqtt";
 import { useSelector, useDispatch } from "react-redux";
@@ -21,35 +21,35 @@ import {
 const initialSensor = [
   {
     id: "temp",
-    value: 28.5,
+    value: NaN,
     unit: "°C",
     label: "Soil temperature",
     color: "text-red-600",
   },
   {
     id: "humi",
-    value: 65.2,
+    value: NaN,
     unit: "%",
     label: "Soil humidity",
     color: "text-blue-600",
   },
   {
     id: "nito",
-    value: 40.2,
+    value: NaN,
     unit: "mg/kg",
     label: "Soil nitrogen",
     color: "text-indigo-600",
   },
   {
     id: "photpho",
-    value: 20.3,
+    value: NaN,
     unit: "mg/kg",
     label: "Soil phosphorus",
     color: "text-indigo-600",
   },
   {
     id: "kali",
-    value: 15.5,
+    value: NaN,
     unit: "mg/kg",
     label: "Soil potassium",
     color: "text-indigo-600",
@@ -61,14 +61,24 @@ const areas = [{ areaId: 1 }, { areaId: 2 }, { areaId: 3 }];
 const brokerUrl = `ws://${import.meta.env.VITE_MQTT_BROKER_URL}:${
   import.meta.env.VITE_MQTT_BROKER_PORT
 }`;
-const topic = [
-  "",
-  "18faa0dd7a927906cb3e/feeds/area1/#",
-  "18faa0dd7a927906cb3e/feeds/area2/#",
-  "18faa0dd7a927906cb3e/feeds/area3/#",
+
+const random_jdfjudu8d8f = [
+  {
+    id: 1212,
+    id_phu: 1,
+    name: "Fertilizer 1",
+    device_code: "18faa0dd7a927906cb3e",
+  },
+  {
+    id: 222,
+    id_phu: 2,
+    name: "Fertilizer 2",
+    device_code: "7fmeieoif9eieo282iee",
+  },
 ];
 
 function Dashboard() {
+  console.log(random_jdfjudu8d8f);
   const {
     schedules,
     totalSchedule,
@@ -82,10 +92,22 @@ function Dashboard() {
 
   const mqttClient = useRef();
 
+  const [deviceSelected, setDeviceSelected] = useState(1);
   const [areaSelected, setAreaSelected] = useState(1);
   const [sensor, setSensor] = useState(initialSensor);
 
   useEffect(() => {
+    const { device_code } = random_jdfjudu8d8f.find(
+      (item) => (item.id = deviceSelected)
+    );
+    console.log(device_code, deviceSelected);
+    const topic = [
+      "",
+      `${device_code}/feeds/area1/#`,
+      `${device_code}/feeds/area2/#`,
+      `${device_code}/feeds/area3/#`,
+    ];
+
     // Connect to the broker
     mqttClient.current = mqtt.connect(brokerUrl, {
       username: import.meta.env.VITE_MQTT_BROKER_USERNAME,
@@ -122,7 +144,7 @@ function Dashboard() {
         console.log("Disconnected to MQTT broker");
       }); // Disconnect from the broker
     };
-  }, [areaSelected]);
+  }, [areaSelected, deviceSelected]);
 
   useEffect(() => {
     dispatch(getSchedules([1, 4]));
@@ -142,7 +164,29 @@ function Dashboard() {
   }
 
   return (
-    <div className="flex gap-8 flex-col h-screen p-4 relative">
+    <div className="flex gap-4 flex-col h-screen p-4 relative">
+      <div className="bg-white rounded-lg shadow-md p-4 w-full border border-gray-200">
+        <div className="flex items-center gap-x-4">
+          <h2 className="text-2xl font-bold">Devices</h2>
+          {random_jdfjudu8d8f.map((device, index) => (
+            <div
+              className={`${
+                device.id === deviceSelected ? "bg-blue-200" : "bg-white"
+              } border-2 border-blue-600 p-2 rounded-md cursor-pointer`}
+              key={index}
+              onClick={() => {
+                console.log(device.id);
+                setDeviceSelected(device.id);
+              }}
+            >
+              <EnvironmentFilled />
+              <span>{device.name}</span>
+            </div>
+          ))}
+          <Button>+ Add device</Button>
+        </div>
+      </div>
+
       <div className="bg-white rounded-lg shadow-md p-4 w-full border border-gray-200">
         <div className="flex items-center mb-4 gap-x-4">
           <h2 className="text-2xl font-bold">Sensor value</h2>
