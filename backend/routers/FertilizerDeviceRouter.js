@@ -3,6 +3,7 @@ import {
   getFertilizerDevices,
   getFertilizerDeviceById,
   getSchedulesByFertilizerDevice,
+  getSchedulesByFertilizerDeviceWeb,
   createFertilizerDevice,
   updateFertilizerDevice,
   deleteFertilizerDevice,
@@ -11,6 +12,11 @@ import { authMiddleware } from "../middlewares/authMiddleware.js";
 
 const router = express.Router();
 
+router.get(
+  "/web/:id/schedule",
+  authMiddleware,
+  getSchedulesByFertilizerDeviceWeb
+);
 router.get("/", authMiddleware, getFertilizerDevices);
 router.get("/:id", authMiddleware, getFertilizerDeviceById);
 router.get("/:id/schedule", authMiddleware, getSchedulesByFertilizerDevice);

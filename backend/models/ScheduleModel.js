@@ -78,7 +78,7 @@ export const getSchedules = async (page = 1, limit = 10) => {
 };
 
 // Create a new user
-export const createSchedule = async (
+export const createSchedule = async ({
   schedule_name,
   priority,
   area,
@@ -94,11 +94,12 @@ export const createSchedule = async (
   start_day,
   end_day,
   days,
-  fertilizer_device_id
-) => {
+  fertilizer_device_id,
+  image = null,
+}) => {
   const query = `
-    INSERT INTO schedules (schedule_name, priority, area, description, flow1, flow2, flow3, cycle, status, start_time, stop_time, schedule_type, start_day, end_day, days, fertilizer_device_id)
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15::days_enum[], $16) RETURNING *`;
+    INSERT INTO schedules (schedule_name, priority, area, description, flow1, flow2, flow3, cycle, status, start_time, stop_time, schedule_type, start_day, end_day, days, fertilizer_device_id, image)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15::days_enum[], $16, $17) RETURNING *`;
   const { rows } = await pool.query(query, [
     schedule_name,
     priority,
@@ -116,6 +117,7 @@ export const createSchedule = async (
     end_day,
     days,
     fertilizer_device_id,
+    image,
   ]);
 
   if (rows.length === 0) {

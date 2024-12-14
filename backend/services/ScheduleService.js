@@ -11,7 +11,8 @@ import {
 export const getAllSchedules = async () => {
   try {
     const result = await modelGetAllSchedules();
-    return result;
+    const { image, ...newData } = result;
+    return newData;
   } catch (error) {
     console.log("Service:", error);
     throw new Error("Server error");
@@ -47,43 +48,9 @@ export const getScheduleById = async (id) => {
 
 export const createSchedule = async (schedule) => {
   try {
-    const {
-      schedule_name,
-      priority,
-      area,
-      description,
-      flow1,
-      flow2,
-      flow3,
-      cycle = 2,
-      status,
-      start_time,
-      stop_time,
-      schedule_type,
-      start_day,
-      end_day,
-      days,
-      fertilizer_device_id,
-    } = schedule;
-    const result = await modelCreateSchedule(
-      schedule_name,
-      priority,
-      area,
-      description,
-      flow1,
-      flow2,
-      flow3,
-      cycle,
-      status,
-      start_time,
-      stop_time,
-      schedule_type,
-      start_day,
-      end_day,
-      days,
-      fertilizer_device_id
-    );
-    return result;
+    const result = await modelCreateSchedule(schedule);
+    const { image, ...newData } = result;
+    return newData;
   } catch (error) {
     console.log("Service:", error);
     throw new Error(error);

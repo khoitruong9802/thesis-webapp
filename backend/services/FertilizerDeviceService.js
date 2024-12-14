@@ -44,6 +44,31 @@ export const getSchedulesByFertilizerDevice = async (
 ) => {
   try {
     const result = await modelGetSchedulesByFertilizerDevice(id, page, limit);
+    const newData = result.map((item) => {
+      const { image, ...data } = item;
+      return data;
+    });
+    const totalCount = await modelGetScheduleCount(id);
+    const totalPages = Math.ceil(totalCount / limit);
+    return {
+      page: parseInt(page, 10),
+      total_pages: totalPages,
+      total_count: totalCount,
+      data: newData,
+    };
+  } catch (error) {
+    console.log("Service:", error);
+    throw new Error("Server error");
+  }
+};
+
+export const getSchedulesByFertilizerDeviceWeb = async (
+  id,
+  page = 1,
+  limit = 10
+) => {
+  try {
+    const result = await modelGetSchedulesByFertilizerDevice(id, page, limit);
     const totalCount = await modelGetScheduleCount(id);
     const totalPages = Math.ceil(totalCount / limit);
     return {

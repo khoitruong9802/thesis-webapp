@@ -5,6 +5,7 @@ import {
   updateFertilizerDevice as serviceUpdateFertilizerDevice,
   deleteFertilizerDevice as serviceDeleteFertilizerDevice,
   getSchedulesByFertilizerDevice as serviceGetSchedulesByFertilizerDevice,
+  getSchedulesByFertilizerDeviceWeb as serviceGetSchedulesByFertilizerDeviceWeb,
 } from "../services/FertilizerDeviceService.js";
 
 export const getFertilizerDevices = async (req, res) => {
@@ -37,6 +38,24 @@ export const getSchedulesByFertilizerDevice = async (req, res) => {
   try {
     const { page, limit } = req.query;
     const fertilizerDevice = await serviceGetSchedulesByFertilizerDevice(
+      req.params.id,
+      page,
+      limit
+    );
+    if (!fertilizerDevice) {
+      return res.status(500).json({ message: "FertilizerDevice not found" });
+    }
+    res.status(200).json(fertilizerDevice);
+  } catch (error) {
+    console.log("Controller:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+export const getSchedulesByFertilizerDeviceWeb = async (req, res) => {
+  try {
+    const { page, limit } = req.query;
+    const fertilizerDevice = await serviceGetSchedulesByFertilizerDeviceWeb(
       req.params.id,
       page,
       limit
