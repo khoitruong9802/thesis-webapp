@@ -262,7 +262,25 @@ export const updateSchedule = async (id, updates) => {
   const query = `
     UPDATE schedules
     SET ${fields.join(", ")}
-    WHERE id = $${values.length} RETURNING *`;
+    WHERE id = $${values.length} 
+    RETURNING 
+    id,
+    schedule_name,
+    priority,
+    area,
+    description,
+    flow1,
+    flow2,
+    flow3,
+    cycle,
+    status,
+    start_time,
+    stop_time,
+    schedule_type,
+    start_day,
+    end_day,
+    fertilizer_device_id,
+    days`;
 
   // Execute the query
   const { rows } = await pool.query(query, values);
