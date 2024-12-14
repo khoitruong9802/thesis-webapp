@@ -2,7 +2,28 @@ import pool from "../config/database.js";
 
 // Fetch all schedules
 export const getAllSchedules = async () => {
-  const query = "SELECT * FROM schedules ORDER BY id";
+  const query = `
+  SELECT 
+    id,
+    schedule_name,
+    priority,
+    area,
+    description,
+    flow1,
+    flow2,
+    flow3,
+    cycle,
+    status,
+    start_time,
+    stop_time,
+    schedule_type,
+    start_day,
+    end_day,
+    fertilizer_device_id,
+    days
+  FROM public.schedules
+  ORDER BY id;
+  `;
   const { rows } = await pool.query(query);
   // Transform the rows
   const transformedRows = rows.map((row) => ({

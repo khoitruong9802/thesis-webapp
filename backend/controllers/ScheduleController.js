@@ -67,6 +67,13 @@ export const updateSchedule = async (req, res) => {
     const updateSchedule = req.body;
     const id = req.params.id;
     const schedule = await serviceUpdateSchedule(id, updateSchedule);
+
+    publish(
+      `${fertilizerCode}/feeds/schedules`,
+      JSON.stringify({ ...schedule, method: "EDIT", id: response.id }),
+      2
+    );
+
     if (!schedule) {
       return res.status(500).json({ message: "Schedule not found" });
     }

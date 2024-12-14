@@ -11,8 +11,7 @@ import {
 export const getAllSchedules = async () => {
   try {
     const result = await modelGetAllSchedules();
-    const { image, ...newData } = result;
-    return newData;
+    return result;
   } catch (error) {
     console.log("Service:", error);
     throw new Error("Server error");
