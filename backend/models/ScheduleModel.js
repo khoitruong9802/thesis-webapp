@@ -25,24 +25,8 @@ export const getAllSchedules = async () => {
   ORDER BY id;
   `;
   const { rows } = await pool.query(query);
-  // Transform the rows
-  const transformedRows = rows.map((row) => ({
-    ...row,
-    priority: Number(row.priority),
-    area: Number(row.area),
-    status: Number(row.status),
-    start_day: new Date(row.start_day).toLocaleDateString("en-CA"), // Convert to local date (YYYY-MM-DD)
-    end_day: new Date(row.end_day).toLocaleDateString("en-CA"), // Convert to local date (YYYY-MM-DD)
-    start_time: row.start_time.substring(0, 5),
-    stop_time: row.stop_time.substring(0, 5),
-    days: row.days
-      .replace(/[{}]/g, "")
-      .split(",")
-      .filter((item) => item !== "")
-      .map(Number), // Convert '{2,3,4}' to [2, 3, 4]
-  }));
 
-  return transformedRows;
+  return rows;
 };
 
 // Fetch user by ID
@@ -54,48 +38,15 @@ export const getScheduleById = async (id) => {
     return undefined;
   }
 
-  // Transform the rows
-  const transformedRows = {
-    ...rows[0],
-    priority: Number(rows[0].priority),
-    area: Number(rows[0].area),
-    status: Number(rows[0].status),
-    start_day: new Date(rows[0].start_day).toLocaleDateString("en-CA"), // Convert to local date (YYYY-MM-DD)
-    end_day: new Date(rows[0].end_day).toLocaleDateString("en-CA"), // Convert to local date (YYYY-MM-DD)
-    start_time: rows[0].start_time.substring(0, 5),
-    stop_time: rows[0].stop_time.substring(0, 5),
-    days: rows[0].days
-      .replace(/[{}]/g, "")
-      .split(",")
-      .filter((item) => item !== "")
-      .map(Number), // Convert '{2,3,4}' to [2, 3, 4]
-  };
-
-  return transformedRows;
+  return rows[0];
 };
 
 export const getSchedules = async (page = 1, limit = 10) => {
   const offset = (page - 1) * limit;
   const query = "SELECT * FROM schedules ORDER BY id DESC LIMIT $1 OFFSET $2";
   const { rows } = await pool.query(query, [limit, offset]);
-  // Transform the rows
-  const transformedRows = rows.map((row) => ({
-    ...row,
-    priority: Number(row.priority),
-    area: Number(row.area),
-    status: Number(row.status),
-    start_day: new Date(row.start_day).toLocaleDateString("en-CA"), // Convert to local date (YYYY-MM-DD)
-    end_day: new Date(row.end_day).toLocaleDateString("en-CA"), // Convert to local date (YYYY-MM-DD)
-    start_time: row.start_time.substring(0, 5),
-    stop_time: row.stop_time.substring(0, 5),
-    days: row.days
-      .replace(/[{}]/g, "")
-      .split(",")
-      .filter((item) => item !== "")
-      .map(Number), // Convert '{2,3,4}' to [2, 3, 4]
-  }));
 
-  return transformedRows;
+  return rows;
 };
 
 // Create a new user
@@ -113,11 +64,14 @@ export const createSchedule = async ({
   stop_time,
   schedule_type,
   start_day,
-  end_day,
+  end_day = "",
   days,
   fertilizer_device_id,
   image = null,
 }) => {
+  if (end_day === "") {
+    end_day = null;
+  }
   const query = `
     INSERT INTO schedules (schedule_name, priority, area, description, flow1, flow2, flow3, cycle, status, start_time, stop_time, schedule_type, start_day, end_day, days, fertilizer_device_id, image)
     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15::days_enum[], $16, $17) RETURNING *`;
@@ -145,24 +99,7 @@ export const createSchedule = async ({
     return undefined;
   }
 
-  // Transform the rows
-  const transformedRows = {
-    ...rows[0],
-    priority: Number(rows[0].priority),
-    area: Number(rows[0].area),
-    status: Number(rows[0].status),
-    start_day: new Date(rows[0].start_day).toLocaleDateString("en-CA"), // Convert to local date (YYYY-MM-DD)
-    end_day: new Date(rows[0].end_day).toLocaleDateString("en-CA"), // Convert to local date (YYYY-MM-DD)
-    start_time: rows[0].start_time.substring(0, 5),
-    stop_time: rows[0].stop_time.substring(0, 5),
-    days: rows[0].days
-      .replace(/[{}]/g, "")
-      .split(",")
-      .filter((item) => item !== "")
-      .map(Number), // Convert '{2,3,4}' to [2, 3, 4]
-  };
-
-  return transformedRows;
+  return rows[0];
 };
 
 // // Update an existing user
@@ -290,26 +227,7 @@ export const updateSchedule = async (id, updates) => {
     return undefined;
   }
 
-  // Transform the returned row
-  const transformedRow = {
-    ...rows[0],
-    priority: Number(rows[0].priority),
-    area: Number(rows[0].area),
-    status: Number(rows[0].status),
-    start_day: rows[0].start_day
-      ? new Date(rows[0].start_day).toLocaleDateString("en-CA")
-      : null,
-    end_day: rows[0].end_day
-      ? new Date(rows[0].end_day).toLocaleDateString("en-CA")
-      : null,
-    start_time: rows[0].start_time ? rows[0].start_time.substring(0, 5) : null,
-    stop_time: rows[0].stop_time ? rows[0].stop_time.substring(0, 5) : null,
-    days: rows[0].days
-      ? rows[0].days.replace(/[{}]/g, "").split(",").map(Number)
-      : null,
-  };
-
-  return transformedRow;
+  return rows[0];
 };
 
 // Delete a user by ID
@@ -321,24 +239,7 @@ export const deleteSchedule = async (id) => {
     return undefined;
   }
 
-  // Transform the rows
-  const transformedRows = {
-    ...rows[0],
-    priority: Number(rows[0].priority),
-    area: Number(rows[0].area),
-    status: Number(rows[0].status),
-    start_day: new Date(rows[0].start_day).toLocaleDateString("en-CA"), // Convert to local date (YYYY-MM-DD)
-    end_day: new Date(rows[0].end_day).toLocaleDateString("en-CA"), // Convert to local date (YYYY-MM-DD)
-    start_time: rows[0].start_time.substring(0, 5),
-    stop_time: rows[0].stop_time.substring(0, 5),
-    days: rows[0].days
-      .replace(/[{}]/g, "")
-      .split(",")
-      .filter((item) => item !== "")
-      .map(Number), // Convert '{2,3,4}' to [2, 3, 4]
-  };
-
-  return transformedRows;
+  return rows[0];
 };
 
 export const getSchedulesCount = async () => {

@@ -8,6 +8,7 @@ import {
   getSchedulesByFertilizerDevice as modelGetSchedulesByFertilizerDevice,
   getScheduleCount as modelGetScheduleCount,
 } from "../models/FertilizerDeviceModel.js";
+import { formatSchedule } from "../utils/helper.js";
 
 export const getFertilizerDevices = async (page = 1, limit = 10) => {
   try {
@@ -46,7 +47,7 @@ export const getSchedulesByFertilizerDevice = async (
     const result = await modelGetSchedulesByFertilizerDevice(id, page, limit);
     const newData = result.map((item) => {
       const { image, ...data } = item;
-      return data;
+      return formatSchedule(data);
     });
     const totalCount = await modelGetScheduleCount(id);
     const totalPages = Math.ceil(totalCount / limit);
@@ -75,7 +76,7 @@ export const getSchedulesByFertilizerDeviceWeb = async (
       page: parseInt(page, 10),
       total_pages: totalPages,
       total_count: totalCount,
-      data: result,
+      data: result.map((schedule) => formatSchedule(schedule)),
     };
   } catch (error) {
     console.log("Service:", error);

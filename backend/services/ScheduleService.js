@@ -7,11 +7,12 @@ import {
   getScheduleById as modelGetScheduleById,
   getSchedulesCount as modelGetSchedulesCount,
 } from "../models/ScheduleModel.js";
+import { formatSchedule } from "../utils/helper.js";
 
 export const getAllSchedules = async () => {
   try {
     const result = await modelGetAllSchedules();
-    return result;
+    return result.map((schedule) => formatSchedule(schedule));
   } catch (error) {
     console.log("Service:", error);
     throw new Error("Server error");
@@ -27,7 +28,7 @@ export const getSchedules = async (page = 1, limit = 10) => {
       page: parseInt(page, 10),
       total_pages: totalPages,
       total_count: totalCount,
-      data: result,
+      data: result.map((schedule) => formatSchedule(schedule)),
     };
   } catch (error) {
     console.log("Service:", error);
@@ -38,7 +39,7 @@ export const getSchedules = async (page = 1, limit = 10) => {
 export const getScheduleById = async (id) => {
   try {
     const result = await modelGetScheduleById(id);
-    return result;
+    return formatSchedule(result);
   } catch (error) {
     console.log("Service:", error);
     throw new Error("Server error");
@@ -49,7 +50,7 @@ export const createSchedule = async (schedule) => {
   try {
     const result = await modelCreateSchedule(schedule);
     const { image, ...newData } = result;
-    return newData;
+    return formatSchedule(newData);
   } catch (error) {
     console.log("Service:", error);
     throw new Error(error);
@@ -104,7 +105,7 @@ export const createSchedule = async (schedule) => {
 export const updateSchedule = async (id, schedule) => {
   try {
     const result = await modelUpdateSchedule(id, schedule);
-    return result;
+    return formatSchedule(result);
   } catch (error) {
     console.log("Service:", error);
     throw new Error("Server error");
@@ -114,7 +115,7 @@ export const updateSchedule = async (id, schedule) => {
 export const deleteSchedule = async (id) => {
   try {
     const result = await modelDeleteSchedule(id);
-    return result;
+    return formatSchedule(result);
   } catch (error) {
     console.log("Service:", error);
     throw new Error("Server error");

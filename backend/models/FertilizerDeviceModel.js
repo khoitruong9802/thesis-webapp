@@ -25,24 +25,7 @@ export const getSchedulesByFertilizerDevice = async (
     "SELECT * FROM schedules WHERE fertilizer_device_id = $1 ORDER BY id DESC LIMIT $2 OFFSET $3";
   const { rows } = await pool.query(query, [id, limit, offset]);
 
-  // Transform the rows
-  const transformedRows = rows.map((row) => ({
-    ...row,
-    priority: Number(row.priority),
-    area: Number(row.area),
-    status: Number(row.status),
-    start_day: new Date(row.start_day).toLocaleDateString("en-CA"), // Convert to local date (YYYY-MM-DD)
-    end_day: new Date(row.end_day).toLocaleDateString("en-CA"), // Convert to local date (YYYY-MM-DD)
-    start_time: row.start_time.substring(0, 5),
-    stop_time: row.stop_time.substring(0, 5),
-    days: row.days
-      .replace(/[{}]/g, "")
-      .split(",")
-      .filter((item) => item !== "")
-      .map(Number), // Convert '{2,3,4}' to [2, 3, 4]
-  }));
-
-  return transformedRows;
+  return rows;
 };
 
 export const getFertilizerDevices = async (page = 1, limit = 10) => {
