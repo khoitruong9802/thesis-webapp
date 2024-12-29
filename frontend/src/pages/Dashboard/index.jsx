@@ -62,23 +62,20 @@ const brokerUrl = `ws://${import.meta.env.VITE_MQTT_BROKER_URL}:${
   import.meta.env.VITE_MQTT_BROKER_PORT
 }`;
 
-const random_jdfjudu8d8f = [
+const fertilizerDevices = [
   {
-    id: 1212,
-    id_phu: 1,
+    id: 1,
     name: "Fertilizer 1",
     device_code: "18faa0dd7a927906cb3e",
   },
   {
-    id: 222,
-    id_phu: 2,
+    id: 2,
     name: "Fertilizer 2",
     device_code: "7fmeieoif9eieo282iee",
   },
 ];
 
 function Dashboard() {
-  console.log(random_jdfjudu8d8f);
   const {
     schedules,
     totalSchedule,
@@ -95,12 +92,13 @@ function Dashboard() {
   const [deviceSelected, setDeviceSelected] = useState(1);
   const [areaSelected, setAreaSelected] = useState(1);
   const [sensor, setSensor] = useState(initialSensor);
-
+  console.log(fertilizerDevices);
   useEffect(() => {
-    const { device_code } = random_jdfjudu8d8f.find(
-      (item) => (item.id = deviceSelected)
-    );
-    console.log(device_code, deviceSelected);
+    // const hhhh = fertilizerDevices.find((item) => (item.id = deviceSelected));
+    // console.log("hhhh", hhhh);
+    // console.log("fertilizerDevices", fertilizerDevices);
+
+    const device_code = "18faa0dd7a927906cb3e";
     const topic = [
       "",
       `${device_code}/feeds/area1/#`,
@@ -168,7 +166,7 @@ function Dashboard() {
       <div className="bg-white rounded-lg shadow-md p-4 w-full border border-gray-200">
         <div className="flex items-center gap-x-4">
           <h2 className="text-2xl font-bold">Devices</h2>
-          {random_jdfjudu8d8f.map((device, index) => (
+          {fertilizerDevices.map((device, index) => (
             <div
               className={`${
                 device.id === deviceSelected ? "bg-blue-200" : "bg-white"

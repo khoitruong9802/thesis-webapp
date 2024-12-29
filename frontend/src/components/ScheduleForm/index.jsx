@@ -37,6 +37,7 @@ const initialState = {
   startDay: "",
   endDay: "",
   days: [],
+  image: "",
 };
 
 const ScheduleForm = () => {
@@ -110,6 +111,20 @@ const ScheduleForm = () => {
     }
   };
 
+  const handleImageUpload = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFormData((prevData) => ({
+          ...prevData,
+          image: reader.result, // Base64 string
+        }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   return (
     <div className="">
       <h1 className="text-2xl font-semibold mb-6">Create Schedule</h1>
@@ -128,6 +143,27 @@ const ScheduleForm = () => {
             placeholder="Enter schedule name"
             required
           />
+        </div>
+
+        <div>
+          <label className="block text-gray-700 font-medium mb-2">
+            Upload Image
+          </label>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleImageUpload}
+            className="w-full border border-gray-300 rounded-md p-2"
+          />
+          {formData.image && (
+            <div className="mt-2">
+              <img
+                src={formData.image}
+                alt="Uploaded Preview"
+                className="w-32 h-32 object-cover border border-gray-300 rounded-md"
+              />
+            </div>
+          )}
         </div>
 
         {/* Priority */}
@@ -199,7 +235,7 @@ const ScheduleForm = () => {
         </div>
 
         {/* Cycle */}
-        <div>
+        {/* <div>
           <label className="block text-gray-700 font-medium mb-2">Cycle</label>
           <input
             type="number"
@@ -210,7 +246,7 @@ const ScheduleForm = () => {
             min={1}
             required
           />
-        </div>
+        </div> */}
 
         {/* Status */}
         <div>

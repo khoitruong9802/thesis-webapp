@@ -2,7 +2,7 @@ import request from "../utils/http";
 
 export const getSchedules = async (page = 1, pageSize = 10) => {
   const res = await request.get(
-    `fertilizer-device/1/schedule?page=${page}&limit=${pageSize}`
+    `fertilizer-device/web/1/schedule?page=${page}&limit=${pageSize}`
   );
   return res;
 };

@@ -5,10 +5,12 @@ import { Popconfirm, notification } from "antd";
 import {
   deleteSchedule,
   getSchedules,
+  updateSchedule,
   setEditId,
   setShowForm,
 } from "../../store/slices/scheduleSlice";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import kksfarm from "../../assets/images/kksfarm.jpg";
 
 const dayMapping = ["", "", "Mon", "Tues", "Wed", "Thurs", "Fri", "Sat", "Sun"];
 
@@ -29,8 +31,10 @@ const Schedule = ({
   startDay,
   endDay,
   days,
+  image,
 }) => {
   const [active, setActive] = useState(status);
+  const { updateLoading } = useSelector((state) => state.schedule);
   const dispatch = useDispatch();
 
   const handleDelete = () => {
@@ -59,9 +63,7 @@ const Schedule = ({
       <div className="flex gap-x-4">
         <img
           className="aspect-square size-24 rounded-lg border-2 border-purple-200"
-          src="
-        https://www.diggers.com.au/cdn/shop/products/orange-cara-cara-navel-wcitcco_162cbf34-0cae-43ac-a538-847d0dc57335_2048x.jpg?v=1637122538
-          "
+          src={image === null || image === "" ? kksfarm : image}
           alt=""
         />
         <div className="flex flex-col gap-y-2">
@@ -70,9 +72,9 @@ const Schedule = ({
             {startTime} - {stopTime}
           </p>
           <div className="flex">
-            <div className="bg-red-200 p-1 rounded-s-lg">{flow1}ml</div>
-            <div className="bg-blue-200 p-1">{flow2}ml</div>
-            <div className="bg-yellow-200 p-1 rounded-e-lg">{flow3}ml</div>
+            <div className="bg-red-200 p-1 rounded-s-lg">{flow1}L</div>
+            <div className="bg-blue-200 p-1">{flow2}L</div>
+            <div className="bg-yellow-200 p-1 rounded-e-lg">{flow3}L</div>
           </div>
         </div>
       </div>
@@ -118,8 +120,32 @@ const Schedule = ({
           </span>
           <input
             checked={active}
+            disabled={updateLoading}
             onChange={() => {
-              setActive(!active);
+              dispatch(
+                updateSchedule({
+                  id,
+                  status: active ? 0 : 1,
+                })
+              )
+                .unwrap()
+                .then(() => {
+                  notification.success({
+                    message: "Notification",
+                    duration: 10,
+                    description: "Schedule status changed successfully",
+                  });
+                  dispatch(getSchedules([1, 4]));
+                  dispatch(setShowForm(false));
+                })
+                .catch((error) => {
+                  console.log(error);
+                  notification.error({
+                    message: "Notification",
+                    duration: 10,
+                    description: error,
+                  });
+                });
             }}
             type="checkbox"
             value=""
